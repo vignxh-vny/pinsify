@@ -99,9 +99,9 @@ export default function LandingPage() {
             </div>
           </div>
           <motion.div 
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2, type: "spring", bounce: 0.5 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-[#E60023] font-black text-2xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}
           >
             PINACOLADA
@@ -121,19 +121,17 @@ export default function LandingPage() {
               AESTHETIC
             </motion.h1>
           </div>
-          <motion.div 
-            initial={{ opacity: 0, scale: 1.5, rotate: -15 }}
-            animate={{ opacity: 1, scale: 1, rotate: 1 }}
-            transition={{ duration: 0.4, delay: 0.4, type: "spring", stiffness: 200, damping: 12 }}
-            className="bg-[#E60023] w-fit px-2 mt-2 -ml-2 z-20 shadow-lg"
-          >
-            <h1 
+          <div className="overflow-hidden bg-[#E60023] w-fit px-2 mt-2 -ml-2 z-20 shadow-lg rotate-1">
+            <motion.h1 
+              initial={{ x: "-100%" }}
+              animate={{ x: "0%" }}
+              transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="text-white font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.85] tracking-tighter"
               style={{ fontFamily: "Impact, sans-serif" }}
             >
               SCANNER
-            </h1>
-          </motion.div>
+            </motion.h1>
+          </div>
           
           {/* Subtext Grid */}
           <motion.div 
@@ -157,7 +155,7 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.9, type: "spring", stiffness: 200, damping: 20 }}
+          transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="w-full flex flex-col gap-4"
         >
           <div className="relative">
