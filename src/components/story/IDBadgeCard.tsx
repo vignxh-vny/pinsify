@@ -1,26 +1,58 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { StoryData } from "@/types/story";
-import { Download } from "lucide-react";
+import { Download, Share2 } from "lucide-react";
 import * as htmlToImage from "html-to-image";
 
 export default function IDBadgeCard({ data }: { data: StoryData }) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleDownload = async () => {
     if (!cardRef.current) return;
+    setIsProcessing(true);
     try {
       const dataUrl = await htmlToImage.toPng(cardRef.current, {
         quality: 1,
         pixelRatio: 3, // High-res download
       });
       const link = document.createElement("a");
-      link.download = `pinterest-id-${(data.user.displayName || data.user.username).replace(/\s+/g, "-")}.png`;
+      link.download = `pinacolada-id-${(data.user.displayName || data.user.username).replace(/\s+/g, "-")}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error("Failed to save image", err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!cardRef.current) return;
+    setIsProcessing(true);
+    try {
+      const dataUrl = await htmlToImage.toPng(cardRef.current, {
+        quality: 1,
+        pixelRatio: 3,
+      });
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], `pinacolada-id-${data.user.username}.png`, { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: "My Pinacolada ID",
+          text: `Check out my Pinacolada Aesthetic ID: ${data.identity.primary}!`,
+          files: [file],
+        });
+      } else {
+        alert("Direct sharing is not supported on this browser. Please use the Save button instead!");
+      }
+    } catch (err) {
+      console.error("Failed to share", err);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -180,14 +212,26 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         </div>
       </div>
 
-      {/* Download Button */}
-      <button
-        onClick={handleDownload}
-        className="mt-8 flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all z-10"
-      >
-        <Download size={18} />
-        Save ID Badge
-      </button>
+      {/* Action Buttons */}
+      <div className="mt-8 flex items-center gap-4 z-10">
+        <button
+          onClick={handleDownload}
+          disabled={isProcessing}
+          className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+        >
+          <Download size={18} />
+          {isProcessing ? "Processing..." : "Save ID"}
+        </button>
+
+        <button
+          onClick={handleShare}
+          disabled={isProcessing}
+          className="flex items-center gap-2 bg-[#E60023] text-white px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+        >
+          <Share2 size={18} />
+          Share
+        </button>
+      </div>
     </div>
   );
 }
