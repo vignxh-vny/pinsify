@@ -174,7 +174,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════════════════════════════
-          BRUTALIST DATA SCANNER (LOADING)
+          ID BADGE PRINTING (LOADING)
           ══════════════════════════════════ */}
       <AnimatePresence>
         {isAnalyzing && (
@@ -183,43 +183,69 @@ export default function LandingPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black overflow-hidden font-mono"
+            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#f4f4f4] overflow-hidden font-mono"
           >
-            {/* Red Grid Background */}
+            {/* Subtle Grid Background */}
             <div 
-              className="absolute inset-0 opacity-20"
+              className="absolute inset-0 opacity-10"
               style={{
-                backgroundImage: "linear-gradient(#E60023 1px, transparent 1px), linear-gradient(90deg, #E60023 1px, transparent 1px)",
-                backgroundSize: "30px 30px"
+                backgroundImage: "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
+                backgroundSize: "40px 40px"
               }}
             />
 
-            {/* Scanning Laser Line */}
+            {/* Printing ID Card Animation */}
             <motion.div 
-              className="absolute left-0 right-0 h-1 bg-[#E60023] shadow-[0_0_20px_5px_rgba(230,0,35,0.8)] z-50"
-              animate={{ top: ["0%", "100%", "0%"] }}
-              transition={{ duration: 3, ease: "linear", repeat: Infinity }}
-            />
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="relative w-64 h-96 bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.15)] flex flex-col p-6 z-10"
+            >
+               {/* Card Clip Slot */}
+               <div className="w-16 h-2 border-2 border-black rounded-full mx-auto mb-6 opacity-30" />
 
-            {/* Central Badge Graphic */}
-            <div className="relative w-48 h-64 border-4 border-[#E60023] bg-black/50 flex flex-col items-center justify-center mb-12 p-4">
-              <div className="w-full h-24 border-2 border-[#E60023] border-dashed mb-4 flex items-center justify-center opacity-50 relative overflow-hidden">
-                <motion.div 
-                  className="absolute inset-0 bg-[#E60023]"
-                  animate={{ top: ["100%", "0%"] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                />
-                <span className="text-[#E60023] font-black tracking-widest text-xs z-10 mix-blend-difference">PROCESSING</span>
-              </div>
-              <div className="w-full flex-1 flex flex-col gap-2">
-                <div className="h-4 bg-[#E60023] w-full opacity-75" />
-                <div className="h-4 bg-[#E60023] w-3/4 opacity-75" />
-                <div className="h-4 bg-[#E60023] w-1/2 opacity-75" />
-              </div>
-            </div>
+               {/* Photo Box scanning */}
+               <div className="w-full h-32 border-2 border-black border-dashed mb-6 relative overflow-hidden flex items-center justify-center bg-gray-50">
+                  <motion.div 
+                    className="absolute inset-0 bg-black/5"
+                    animate={{ top: ["100%", "0%", "100%"] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  />
+                  <motion.div
+                     className="absolute w-full h-[2px] bg-black shadow-[0_0_10px_rgba(0,0,0,0.3)]"
+                     animate={{ top: ["0%", "100%", "0%"] }}
+                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  />
+                  <span className="text-gray-400 text-[10px] font-bold tracking-widest uppercase z-10">RENDERING PROFILE</span>
+               </div>
+
+               {/* Data Lines printing one by one */}
+               <div className="flex flex-col gap-3 flex-1">
+                  <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 1, delay: 0.5, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
+                  <motion.div initial={{ width: "0%" }} animate={{ width: "75%" }} transition={{ duration: 1, delay: 1.2, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
+                  <motion.div initial={{ width: "0%" }} animate={{ width: "90%" }} transition={{ duration: 1, delay: 1.9, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
+                  <motion.div initial={{ width: "0%" }} animate={{ width: "50%" }} transition={{ duration: 1, delay: 2.6, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
+               </div>
+               
+               {/* Barcode bottom */}
+               <motion.div 
+                 className="h-10 mt-auto border-t-2 border-black pt-2 flex gap-[2px] justify-between overflow-hidden"
+               >
+                 {Array.from({ length: 25 }).map((_, i) => (
+                   <motion.div 
+                     key={i} 
+                     initial={{ y: "100%" }} 
+                     animate={{ y: "0%" }} 
+                     transition={{ duration: 0.3, delay: 3.5 + (i * 0.05), ease: "easeOut" }}
+                     className="bg-black h-full" 
+                     style={{ width: `${Math.random() * 4 + 1}px` }} 
+                   />
+                 ))}
+               </motion.div>
+            </motion.div>
 
             {/* Dynamic Loading Text */}
-            <div className="relative z-10 flex flex-col items-center">
+            <div className="relative z-10 flex flex-col items-center mt-12">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={loadingTextIndex}
@@ -227,29 +253,15 @@ export default function LandingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-[#E60023] text-white px-4 py-1 text-sm sm:text-base font-bold tracking-widest uppercase mb-2"
+                  className="bg-black text-white px-4 py-1 text-sm font-bold tracking-widest uppercase mb-2 shadow-[4px_4px_0px_0px_rgba(230,0,35,0.5)]"
                 >
                   {loadingPhrases[loadingTextIndex]}
                 </motion.div>
               </AnimatePresence>
               
-              <div className="text-gray-500 text-xs tracking-[0.3em] uppercase">
-                PLEASE DO NOT CLOSE TERMINAL
+              <div className="text-gray-500 text-xs tracking-[0.3em] uppercase mt-2">
+                PLEASE DO NOT CLOSE
               </div>
-            </div>
-
-            {/* Scrolling Code / Logs (Fake) */}
-            <div className="absolute bottom-4 left-4 right-4 h-24 overflow-hidden opacity-30 text-[#E60023] text-[10px] leading-tight select-none">
-               {Array.from({ length: 20 }).map((_, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.2, duration: 0.1 }}
-                  >
-                    {`[${new Date().toISOString()}] VERIFYING NODE 0x${Math.floor(Math.random()*16777215).toString(16).toUpperCase()}... OK`}
-                  </motion.div>
-               ))}
             </div>
           </motion.div>
         )}
