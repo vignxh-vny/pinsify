@@ -23,7 +23,7 @@ export default function IdentityRevealCard({ data, isActive }: StoryCardProps) {
                 }
               : {}
           }
-          transition={{ delay: 0.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.5, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         />
 
         {/* Particle burst */}
@@ -44,7 +44,7 @@ export default function IdentityRevealCard({ data, isActive }: StoryCardProps) {
               }}
               transition={{
                 delay: 1.2 + i * 0.05,
-                duration: 1.2,
+                duration: 0.4,
                 ease: "easeOut",
               }}
             />
@@ -54,9 +54,9 @@ export default function IdentityRevealCard({ data, isActive }: StoryCardProps) {
       <div className="relative z-10 flex flex-col items-center">
         {/* Pre-reveal */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-3"
         >
           Your Aesthetic Identity
@@ -73,14 +73,12 @@ export default function IdentityRevealCard({ data, isActive }: StoryCardProps) {
 
         {/* THE BIG REVEAL */}
         <motion.h2
-          initial={{ opacity: 0, scale: 0.7, y: 20 }}
+          initial={{ opacity: 0, scale: 0.95, y: 0 }}
           animate={isActive ? { opacity: 1, scale: 1, y: 0 } : {}}
           transition={{
             delay: 1,
-            duration: 1,
-            type: "spring",
-            stiffness: 120,
-            damping: 12,
+            duration: 0.4,
+            type: "tween", ease: "easeOut",
           }}
           className="text-4xl sm:text-5xl font-bold text-gradient glow-text mb-4 font-heading leading-tight"
         >
@@ -89,9 +87,9 @@ export default function IdentityRevealCard({ data, isActive }: StoryCardProps) {
 
         {/* Tagline */}
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1.8, duration: 0.6 }}
+          transition={{ delay: 1.8, duration: 0.2 }}
           className="text-[var(--text-accent)] italic text-base mb-8"
         >
           &ldquo;{data.identity.tagline}&rdquo;
@@ -99,15 +97,15 @@ export default function IdentityRevealCard({ data, isActive }: StoryCardProps) {
 
         {/* Secondary aesthetics */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 2.2, duration: 0.6 }}
+          transition={{ delay: 2.2, duration: 0.2 }}
           className="flex flex-wrap justify-center gap-2"
         >
           {data.identity.secondary.map((sec, i) => (
             <motion.span
               key={sec}
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={isActive ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 2.4 + i * 0.15 }}
               className="px-3 py-1.5 rounded-full glass text-xs text-[var(--text-secondary)]"

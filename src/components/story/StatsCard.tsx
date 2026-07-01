@@ -61,9 +61,9 @@ export default function StatsCard({ data, isActive }: StoryCardProps) {
 
       <div className="relative z-10 flex flex-col items-center">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.2em] text-[var(--text-secondary)] mb-10"
         >
           Your Pinterest Universe
@@ -71,9 +71,9 @@ export default function StatsCard({ data, isActive }: StoryCardProps) {
 
         {/* Pins counter */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={isActive ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.4, type: "spring", stiffness: 150 }}
+          transition={{ delay: 0.4, type: "tween", ease: "easeOut" }}
           className="mb-8"
         >
           <div className="text-6xl sm:text-7xl font-bold text-gradient mb-2 font-heading">
@@ -97,16 +97,16 @@ export default function StatsCard({ data, isActive }: StoryCardProps) {
               className="w-1.5 h-1.5 rounded-full bg-[var(--accent-violet)]"
               initial={{ scale: 0 }}
               animate={isActive ? { scale: 1 } : {}}
-              transition={{ delay: 1 + i * 0.15, type: "spring" }}
+              transition={{ delay: 1 + i * 0.15, type: "tween", ease: "easeOut" }}
             />
           ))}
         </motion.div>
 
         {/* Boards counter */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={isActive ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 1.2, type: "spring", stiffness: 150 }}
+          transition={{ delay: 1.2, type: "tween", ease: "easeOut" }}
           className="mb-10"
         >
           <div className="text-5xl sm:text-6xl font-bold text-gradient-subtle mb-2 font-heading">
@@ -119,9 +119,9 @@ export default function StatsCard({ data, isActive }: StoryCardProps) {
 
         {/* Bottom text */}
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 2.2, duration: 0.6 }}
+          transition={{ delay: 2.2, duration: 0.2 }}
           className="text-sm text-[var(--text-tertiary)] max-w-xs leading-relaxed"
         >
           Each one a window into your visual mind. Let&apos;s see what they reveal.

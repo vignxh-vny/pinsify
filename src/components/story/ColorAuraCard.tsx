@@ -18,7 +18,7 @@ export default function ColorAuraCard({ data, isActive }: StoryCardProps) {
               ? { scale: 1, opacity: 1 }
               : {}
           }
-          transition={{ delay: 0.4, duration: 1.2, type: "spring", stiffness: 80 }}
+          transition={{ delay: 0.4, duration: 0.4, type: "tween", ease: "easeOut" }}
         >
           {/* Orbiting color rings */}
           {colorAura.colors.map((color, i) => (
@@ -75,18 +75,18 @@ export default function ColorAuraCard({ data, isActive }: StoryCardProps) {
 
       <div className="relative z-10 flex flex-col items-center mt-auto pb-16">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-4"
         >
           Your Color Aura
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.8, duration: 0.8 }}
+          transition={{ delay: 0.8, duration: 0.3 }}
           className="text-3xl sm:text-4xl font-bold mb-4 font-heading"
           style={{
             background: `linear-gradient(135deg, ${colorAura.colors[2]}, ${colorAura.colors[3]})`,
@@ -99,9 +99,9 @@ export default function ColorAuraCard({ data, isActive }: StoryCardProps) {
 
         {/* Color palette swatches */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1.2, duration: 0.6 }}
+          transition={{ delay: 1.2, duration: 0.2 }}
           className="flex gap-2 mb-6"
         >
           {colorAura.colors.map((color, i) => (
@@ -109,7 +109,7 @@ export default function ColorAuraCard({ data, isActive }: StoryCardProps) {
               key={i}
               initial={{ scale: 0 }}
               animate={isActive ? { scale: 1 } : {}}
-              transition={{ delay: 1.4 + i * 0.1, type: "spring" }}
+              transition={{ delay: 1.4 + i * 0.1, type: "tween", ease: "easeOut" }}
               className="w-8 h-8 rounded-lg border border-white/10"
               style={{ background: color }}
               title={color}
@@ -118,9 +118,9 @@ export default function ColorAuraCard({ data, isActive }: StoryCardProps) {
         </motion.div>
 
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1.8, duration: 0.6 }}
+          transition={{ delay: 1.8, duration: 0.2 }}
           className="text-sm text-[var(--text-secondary)] max-w-xs leading-relaxed"
         >
           {colorAura.description}
@@ -129,7 +129,7 @@ export default function ColorAuraCard({ data, isActive }: StoryCardProps) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={isActive ? { opacity: 1 } : {}}
-          transition={{ delay: 2.2, duration: 0.6 }}
+          transition={{ delay: 2.2, duration: 0.2 }}
           className="mt-3 text-xs text-[var(--text-tertiary)] italic"
         >
           {colorAura.mood}

@@ -21,18 +21,18 @@ export default function ThemesCard({ data, isActive }: StoryCardProps) {
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-sm">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-8"
         >
           Visual DNA
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
           className="text-2xl sm:text-3xl font-bold mb-8 font-heading"
         >
           Your Top Themes
@@ -43,7 +43,7 @@ export default function ThemesCard({ data, isActive }: StoryCardProps) {
           {data.themes.map((theme, i) => (
             <motion.div
               key={theme.name}
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -10 }}
               animate={isActive ? { opacity: 1, x: 0 } : {}}
               transition={{
                 delay: 0.6 + i * 0.15,
@@ -71,7 +71,7 @@ export default function ThemesCard({ data, isActive }: StoryCardProps) {
                   animate={isActive ? { width: `${theme.percentage}%` } : {}}
                   transition={{
                     delay: 0.8 + i * 0.15,
-                    duration: 1,
+                    duration: 0.4,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                 />

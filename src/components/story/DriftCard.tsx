@@ -23,18 +23,18 @@ export default function DriftCard({ data, isActive }: StoryCardProps) {
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-4"
         >
           Evolution
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
           className="text-2xl sm:text-3xl font-bold mb-10 font-heading"
         >
           <span className="text-gradient">Aesthetic Drift</span>
@@ -52,18 +52,18 @@ export default function DriftCard({ data, isActive }: StoryCardProps) {
             }}
             initial={{ scaleY: 0 }}
             animate={isActive ? { scaleY: 1 } : {}}
-            transition={{ delay: 0.6, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.6, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           />
 
           <div className="space-y-6">
             {drift.map((point, i) => (
               <motion.div
                 key={point.period}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={isActive ? { opacity: 1, x: 0 } : {}}
                 transition={{
                   delay: 0.8 + i * 0.3,
-                  duration: 0.6,
+                  duration: 0.2,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="flex items-center gap-4"
@@ -77,8 +77,7 @@ export default function DriftCard({ data, isActive }: StoryCardProps) {
                     animate={isActive ? { scale: 1 } : {}}
                     transition={{
                       delay: 1 + i * 0.3,
-                      type: "spring",
-                      stiffness: 300,
+                      type: "tween", ease: "easeOut",
                     }}
                   />
                   {/* Glow */}
@@ -116,9 +115,9 @@ export default function DriftCard({ data, isActive }: StoryCardProps) {
         </div>
 
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 2.5, duration: 0.6 }}
+          transition={{ delay: 2.5, duration: 0.2 }}
           className="mt-8 text-xs text-[var(--text-tertiary)] leading-relaxed"
         >
           Your taste has evolved beautifully — from raw to refined, always authentic.

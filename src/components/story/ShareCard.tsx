@@ -44,9 +44,9 @@ export default function ShareCard({ data, isActive }: StoryCardProps) {
       <div className="relative z-10 flex flex-col items-center">
         {/* Identity card */}
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          initial={{ opacity: 0, y: 0, scale: 0.9 }}
           animate={isActive ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
+          transition={{ delay: 0.3, duration: 0.3, type: "tween", ease: "easeOut" }}
           className="glass-strong rounded-3xl p-8 max-w-xs w-full mb-8"
         >
           {/* Brand */}
@@ -101,9 +101,9 @@ export default function ShareCard({ data, isActive }: StoryCardProps) {
 
         {/* Action buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1, duration: 0.6 }}
+          transition={{ delay: 1, duration: 0.2 }}
           className="flex flex-col gap-3 w-full max-w-xs"
         >
           <button className="btn-primary w-full py-3.5">
@@ -132,7 +132,7 @@ export default function ShareCard({ data, isActive }: StoryCardProps) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={isActive ? { opacity: 1 } : {}}
-          transition={{ delay: 1.5, duration: 0.6 }}
+          transition={{ delay: 1.5, duration: 0.2 }}
           className="mt-6 text-xs text-[var(--text-tertiary)]"
         >
           Your aesthetic identity is uniquely yours. ✨

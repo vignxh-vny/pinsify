@@ -22,18 +22,18 @@ export default function HiddenAestheticCard({ data, isActive }: StoryCardProps) 
       <div className="relative z-10 flex flex-col items-center max-w-sm">
         {/* Surprise intro */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-3"
         >
           Hidden Discovery
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.5, duration: 0.8 }}
+          transition={{ delay: 0.5, duration: 0.3 }}
           className="text-xl sm:text-2xl font-semibold mb-2 text-[var(--text-accent)]"
         >
           You might not know this, but...
@@ -51,7 +51,7 @@ export default function HiddenAestheticCard({ data, isActive }: StoryCardProps) 
           {data.hiddenAesthetics.map((hidden, i) => (
             <motion.div
               key={hidden.name}
-              initial={{ opacity: 0, y: 30, rotateX: 90 }}
+              initial={{ opacity: 0, y: 0, rotateX: 90 }}
               animate={
                 isActive
                   ? { opacity: 1, y: 0, rotateX: 0 }
@@ -59,7 +59,7 @@ export default function HiddenAestheticCard({ data, isActive }: StoryCardProps) 
               }
               transition={{
                 delay: 1.2 + i * 0.5,
-                duration: 0.8,
+                duration: 0.3,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="glass-card rounded-2xl p-5 text-left"
@@ -80,7 +80,7 @@ export default function HiddenAestheticCard({ data, isActive }: StoryCardProps) 
                         }
                         transition={{
                           delay: 1.6 + i * 0.5,
-                          duration: 0.8,
+                          duration: 0.3,
                           ease: [0.16, 1, 0.3, 1],
                         }}
                       />

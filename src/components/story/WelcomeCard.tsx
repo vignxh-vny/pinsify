@@ -31,7 +31,7 @@ export default function WelcomeCard({ data, isActive }: StoryCardProps) {
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={isActive ? { scale: 1, opacity: 1 } : {}}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
+          transition={{ delay: 0.2, type: "tween", ease: "easeOut" }}
           className="w-24 h-24 rounded-full glass-strong flex items-center justify-center mb-8 glow-border"
         >
           <span className="text-4xl">✨</span>
@@ -39,9 +39,9 @@ export default function WelcomeCard({ data, isActive }: StoryCardProps) {
 
         {/* Greeting */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.5, duration: 0.6 }}
+          transition={{ delay: 0.5, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.2em] text-[var(--text-secondary)] mb-4"
         >
           Welcome back
@@ -49,9 +49,9 @@ export default function WelcomeCard({ data, isActive }: StoryCardProps) {
 
         {/* Name */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.7, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.7, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="text-3xl sm:text-4xl font-bold mb-6 glow-text"
         >
           {data.user.displayName}
@@ -61,15 +61,15 @@ export default function WelcomeCard({ data, isActive }: StoryCardProps) {
         <motion.div
           initial={{ scaleX: 0 }}
           animate={isActive ? { scaleX: 1 } : {}}
-          transition={{ delay: 1, duration: 0.6 }}
+          transition={{ delay: 1, duration: 0.2 }}
           className="w-16 h-px bg-gradient-to-r from-transparent via-[var(--accent-violet)] to-transparent mb-6"
         />
 
         {/* Tagline */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1.2, duration: 0.8 }}
+          transition={{ delay: 1.2, duration: 0.3 }}
           className="text-[var(--text-secondary)] text-lg leading-relaxed max-w-xs"
         >
           Let&apos;s explore your

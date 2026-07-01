@@ -65,9 +65,9 @@ export default function FeelsLikeCard({ data, isActive }: StoryCardProps) {
 
       <div className="relative z-10 flex flex-col items-center max-w-sm">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-8"
         >
           Emotional Reading
@@ -75,9 +75,9 @@ export default function FeelsLikeCard({ data, isActive }: StoryCardProps) {
 
         {/* "Your Pinterest feels like..." */}
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.5, duration: 0.8 }}
+          transition={{ delay: 0.5, duration: 0.3 }}
           className="text-lg text-[var(--text-accent)] italic mb-6 font-semibold"
         >
           &ldquo;Your Pinterest feels like...&rdquo;

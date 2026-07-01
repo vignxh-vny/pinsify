@@ -21,18 +21,18 @@ export default function VibeCard({ data, isActive }: StoryCardProps) {
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-sm">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           className="text-sm uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-4"
         >
           Personality Profile
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={isActive ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
           className="text-2xl sm:text-3xl font-bold mb-8 text-gradient-subtle font-heading"
         >
           Your Vibe Check
@@ -43,7 +43,7 @@ export default function VibeCard({ data, isActive }: StoryCardProps) {
           {data.vibes.map((vibe, i) => (
             <motion.div
               key={vibe.trait}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 0 }}
               animate={isActive ? { opacity: 1, y: 0 } : {}}
               transition={{
                 delay: 0.6 + i * 0.2,
@@ -74,7 +74,7 @@ export default function VibeCard({ data, isActive }: StoryCardProps) {
                   animate={isActive ? { width: `${vibe.value}%` } : {}}
                   transition={{
                     delay: 0.9 + i * 0.2,
-                    duration: 1.2,
+                    duration: 0.4,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                 >

@@ -21,18 +21,15 @@ const AUTO_ADVANCE_MS = 12000;
 const cardVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? "100%" : "-100%",
-    opacity: 0,
-    scale: 0.95,
+    opacity: 1,
   }),
   center: {
     x: 0,
     opacity: 1,
-    scale: 1,
   },
   exit: (direction: number) => ({
     x: direction > 0 ? "-100%" : "100%",
-    opacity: 0,
-    scale: 0.95,
+    opacity: 1,
   }),
 };
 
@@ -132,8 +129,7 @@ function StoryViewer() {
               <motion.div
                 className="h-full rounded-full"
                 style={{
-                  background:
-                    "linear-gradient(90deg, var(--accent-violet), var(--accent-rose))",
+                  background: "var(--text-primary)",
                 }}
                 initial={{ width: "0%" }}
                 animate={{
@@ -176,9 +172,8 @@ function StoryViewer() {
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.3 },
-              scale: { duration: 0.3 },
+              x: { type: "tween", duration: 0.25, ease: "easeInOut" },
+              opacity: { duration: 0.1 },
             }}
             className="story-card"
           >
@@ -188,7 +183,7 @@ function StoryViewer() {
 
         {/* Card counter */}
         <div className="absolute bottom-4 left-0 right-0 z-50 flex justify-center">
-          <span className="text-[11px] text-[var(--text-tertiary)] font-mono tracking-wider">
+          <span className="text-[11px] text-[var(--text-secondary)] font-black font-mono tracking-wider">
             {currentCard + 1} / {TOTAL_CARDS}
           </span>
         </div>
