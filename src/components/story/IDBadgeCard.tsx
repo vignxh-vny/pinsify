@@ -133,10 +133,13 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         <div className="flex-1 w-[85%] mx-auto mt-6 flex flex-col justify-between pb-8 z-10">
           
           {/* Name & Identity */}
-          <div className="flex gap-3 h-28">
+          <div className="flex gap-3">
             {/* Vertical Red Banner */}
-            <div className="bg-[#E60023] text-white w-6 flex flex-col items-center justify-center rounded-sm shadow-inner">
-               <span className="text-[10px] font-black tracking-widest uppercase -rotate-90 whitespace-nowrap">
+            <div className="bg-[#E60023] text-white w-6 py-3 flex flex-col items-center justify-center rounded-sm shadow-inner overflow-hidden">
+               <span 
+                 className="text-[10px] font-black tracking-widest uppercase whitespace-nowrap"
+                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+               >
                   {data.themes[0]?.name || "VIBES"}
                </span>
             </div>
