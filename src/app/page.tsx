@@ -30,16 +30,14 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, [isAnalyzing, loadingPhrases.length]);
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (force: boolean = false) => {
     if (!username.trim()) return;
     setIsAnalyzing(true);
     try {
-
-
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.trim() }),
+        body: JSON.stringify({ username: username.trim(), force }),
       });
       const data = await res.json();
 
@@ -167,7 +165,7 @@ export default function LandingPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
+                onKeyDown={(e) => e.key === "Enter" && handleAnalyze(false)}
                 placeholder="USERNAME"
                 className="w-full bg-transparent p-4 pl-1 text-xl font-bold uppercase tracking-widest text-black placeholder-gray-400 focus:outline-none rounded-none"
               />
@@ -175,12 +173,21 @@ export default function LandingPage() {
           </div>
 
           <button
-            onClick={handleAnalyze}
+            onClick={() => handleAnalyze(false)}
             disabled={!username.trim() || isAnalyzing}
             className="w-full bg-[#E60023] border-4 border-black text-white p-4 text-2xl font-black uppercase tracking-widest hover:bg-black transition-colors disabled:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:shadow-[4px_4px_0px_0px_rgba(156,163,175,1)] disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] rounded-none"
             style={{ fontFamily: "Impact, sans-serif" }}
           >
             GENERATE ID
+          </button>
+          
+          <button
+            onClick={() => handleAnalyze(true)}
+            disabled={!username.trim() || isAnalyzing}
+            className="w-full bg-white border-4 border-black text-black p-3 text-xl font-black uppercase tracking-widest hover:bg-gray-100 transition-colors disabled:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:shadow-none disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] rounded-none"
+            style={{ fontFamily: "Impact, sans-serif" }}
+          >
+            FORCE REGENERATE
           </button>
         </motion.div>
       </section>
