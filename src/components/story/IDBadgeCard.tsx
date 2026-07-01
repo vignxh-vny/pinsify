@@ -43,7 +43,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: "My Pinacolada ID",
-          text: `Check out my Pinacolada Aesthetic ID: ${data.identity.primary}!`,
+          text: `Check out my Pinacolada Pinterest ID: ${data.identity.primary}!`,
           files: [file],
         });
       } else {
@@ -110,7 +110,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         {/* Red Tags Top Left */}
         <div className="absolute top-8 left-0 flex flex-col gap-1 z-10 max-w-[80%]">
           <div className="bg-[#E60023] text-white font-black px-4 py-1 text-sm tracking-widest uppercase shadow-md inline-block self-start">
-            AESTHETIC
+            PINTEREST
           </div>
           <div className="bg-[#E60023] text-white font-black px-4 py-1 text-sm tracking-widest uppercase inline-block self-start shadow-md">
             IDENTITY
