@@ -130,20 +130,20 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         </div>
 
         {/* Main Typography Area */}
-        <div className="flex-1 w-[85%] mx-auto mt-6 flex flex-col justify-between pb-8 z-10 relative">
+        <div className="flex-1 w-[85%] mx-auto mt-6 flex flex-col justify-between pb-8 z-10">
           
-          {/* Absolute Vertical Red Banner overlapping everything */}
-          <div className="absolute -left-4 top-0 bottom-8 w-8 bg-[#E60023] text-white flex flex-col items-center justify-center rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-50">
-             <span 
-               className="text-[12px] font-black tracking-widest uppercase whitespace-nowrap"
-               style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-             >
-                {data.themes[0]?.name || "VIBES"}
-             </span>
-          </div>
-
           {/* Name & Identity */}
-          <div className="flex pl-8">
+          <div className="flex gap-3">
+            {/* Vertical Red Banner */}
+            <div className="bg-[#E60023] text-white w-6 py-3 flex flex-col items-center justify-center rounded-sm shadow-inner overflow-hidden">
+               <span 
+                 className="text-[10px] font-black tracking-widest uppercase whitespace-nowrap"
+                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+               >
+                  {data.themes[0]?.name || "VIBES"}
+               </span>
+            </div>
+            
             {/* Massive Text */}
             <div className="flex flex-col justify-center flex-1">
               <h1 className="text-black font-black uppercase text-4xl sm:text-5xl leading-[0.85] tracking-tighter break-words drop-shadow-sm" style={{ fontFamily: "Impact, sans-serif" }}>
