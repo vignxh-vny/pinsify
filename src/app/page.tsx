@@ -98,8 +98,8 @@ export default function LandingPage() {
               ONLINE
             </div>
           </div>
-          <div className="text-[#E60023] font-black text-3xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}>
-            P/ID
+          <div className="text-[#E60023] font-black text-2xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}>
+            PINACOLADA
           </div>
         </motion.div>
 

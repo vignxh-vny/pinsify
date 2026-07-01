@@ -123,8 +123,8 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
           {/* Circle Stamp */}
           <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-[#f4f4f4] rounded-full border-[6px] border-[#E60023] flex items-center justify-center rotate-12 z-20 shadow-lg">
             <div className="text-[#E60023] font-black text-center leading-none tracking-tighter flex flex-col">
-              <span className="text-2xl">PIN</span>
-              <span className="text-4xl">ID</span>
+              <span className="text-[20px]">PINA</span>
+              <span className="text-[28px]">COLADA</span>
             </div>
           </div>
         </div>

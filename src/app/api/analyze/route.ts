@@ -185,7 +185,7 @@ export async function POST(request: Request) {
       }
     }
 
-    if (!aiResponse.text) {
+    if (!aiResponse?.text) {
       throw new Error("Failed to generate AI content");
     }
 
