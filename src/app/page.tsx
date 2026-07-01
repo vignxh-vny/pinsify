@@ -85,9 +85,9 @@ export default function LandingPage() {
         
         {/* TOP BADGE */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
           className="w-full flex justify-between items-start mb-12"
         >
           <div className="flex flex-col gap-1">
@@ -98,35 +98,50 @@ export default function LandingPage() {
               ONLINE
             </div>
           </div>
-          <div className="text-[#E60023] font-black text-2xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2, type: "spring", bounce: 0.5 }}
+            className="text-[#E60023] font-black text-2xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}
+          >
             PINACOLADA
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* HEADLINE */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="w-full flex flex-col mb-10 relative"
-        >
-          <h1 
-            className="text-black font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.8] tracking-tighter z-10"
-            style={{ fontFamily: "Impact, sans-serif" }}
+        <div className="w-full flex flex-col mb-10 relative">
+          <div className="overflow-hidden">
+            <motion.h1 
+              initial={{ y: "100%" }}
+              animate={{ y: "0%" }}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-black font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.8] tracking-tighter z-10"
+              style={{ fontFamily: "Impact, sans-serif" }}
+            >
+              AESTHETIC
+            </motion.h1>
+          </div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 1.5, rotate: -15 }}
+            animate={{ opacity: 1, scale: 1, rotate: 1 }}
+            transition={{ duration: 0.4, delay: 0.4, type: "spring", stiffness: 200, damping: 12 }}
+            className="bg-[#E60023] w-fit px-2 mt-2 -ml-2 z-20 shadow-lg"
           >
-            AESTHETIC
-          </h1>
-          <div className="bg-[#E60023] w-fit px-2 mt-2 -ml-2 z-20 shadow-lg rotate-1">
             <h1 
               className="text-white font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.85] tracking-tighter"
               style={{ fontFamily: "Impact, sans-serif" }}
             >
               SCANNER
             </h1>
-          </div>
+          </motion.div>
           
           {/* Subtext Grid */}
-          <div className="grid grid-cols-2 gap-4 mt-8 border-t-4 border-black pt-4 text-black">
+          <motion.div 
+            initial={{ opacity: 0, filter: "blur(10px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.3, delay: 0.7 }}
+            className="grid grid-cols-2 gap-4 mt-8 border-t-4 border-black pt-4 text-black"
+          >
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Process</p>
               <p className="text-xs font-bold leading-tight">Extract visual DNA from pins & boards.</p>
@@ -135,14 +150,14 @@ export default function LandingPage() {
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Output</p>
               <p className="text-xs font-bold leading-tight">Generate official VIP Aesthetic Badge.</p>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* INPUT & ACTION */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.9, type: "spring", stiffness: 200, damping: 20 }}
           className="w-full flex flex-col gap-4"
         >
           <div className="relative">
