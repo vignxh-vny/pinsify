@@ -34,8 +34,7 @@ export default function LandingPage() {
     if (!username.trim()) return;
     setIsAnalyzing(true);
     try {
-      // Artificial delay for testing the loading screen
-      await new Promise((resolve) => setTimeout(resolve, 8000));
+
 
       const res = await fetch("/api/analyze", {
         method: "POST",
