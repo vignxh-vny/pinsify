@@ -102,12 +102,17 @@ export async function POST(request: Request) {
       const dummyEmail = `${cleanUsername}@pinsbyme.local`;
       const existingUser = await prisma.user.findUnique({
         where: { email: dummyEmail },
-        include: { aestheticProfile: true }
+        include: { 
+          aestheticProfiles: {
+            orderBy: { createdAt: 'desc' },
+            take: 1
+          } 
+        }
       });
 
-      if (existingUser && existingUser.aestheticProfile) {
+      if (existingUser && existingUser.aestheticProfiles.length > 0) {
         console.log("Returning cached profile for", cleanUsername);
-        return NextResponse.json({ success: true, profileId: existingUser.aestheticProfile.id });
+        return NextResponse.json({ success: true, profileId: existingUser.aestheticProfiles[0].id });
       }
     }
 
@@ -215,11 +220,9 @@ export async function POST(request: Request) {
       });
     }
 
-    // Upsert the profile
-    const profile = await prisma.aestheticProfile.upsert({
-      where: { userId: user.id },
-      update: { data: fullStoryData },
-      create: {
+    // Create a new profile history entry
+    const profile = await prisma.aestheticProfile.create({
+      data: {
         userId: user.id,
         data: fullStoryData,
       }
