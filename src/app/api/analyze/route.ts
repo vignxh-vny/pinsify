@@ -13,11 +13,11 @@ const StorySchema: Schema = {
     identity: {
       type: Type.OBJECT,
       properties: {
-        primary: { type: Type.STRING, description: "The core aesthetic identity (e.g., 'The Thalapathy & F1 Speedster Era'). It MUST be highly specific, directly naming the exact actors, celebrities, cars, or hyper-niche concepts found in the pins. Do NOT use generic terms like 'Celebrity Admiration'." },
-        secondary: { type: Type.ARRAY, items: { type: Type.STRING }, description: "3 secondary aesthetic tags. These MUST be hyper-specific nouns found in the pins (e.g., 'Lewis Hamilton', 'Kollywood', 'JDM Cars')." },
+        primary: { type: Type.STRING, description: "The core aesthetic identity (e.g., 'Dark Academia Dreamer', 'Contemporary Iconography'). Must be a conceptual vibe, not literal names." },
+        secondary: { type: Type.ARRAY, items: { type: Type.STRING }, description: "3 secondary aesthetic tags (e.g., 'Modern Masculinity', 'Soft Grunge')" },
         emoji: { type: Type.STRING, description: "A single representative emoji" },
-        tagline: { type: Type.STRING, description: "A poetic one-liner summarizing their highly specific vibe" },
-        description: { type: Type.STRING, description: "A beautifully written 2-3 sentence paragraph about their curated world. You MUST explicitly name-drop the specific people, brands, or distinct objects they pin." },
+        tagline: { type: Type.STRING, description: "A poetic one-liner summarizing their conceptual vibe" },
+        description: { type: Type.STRING, description: "A beautifully written 2-3 sentence paragraph about their curated world and what it says about their personality." },
       },
     },
     colorAura: {
@@ -35,7 +35,7 @@ const StorySchema: Schema = {
       items: {
         type: Type.OBJECT,
         properties: {
-          name: { type: Type.STRING, description: "Must be a highly specific noun or name (e.g., 'Thalapathy Fan-edits', 'F1 Race Cars', 'Vintage Nike'), NOT generic." },
+          name: { type: Type.STRING },
           percentage: { type: Type.INTEGER },
           emoji: { type: Type.STRING },
         },
@@ -164,9 +164,9 @@ export async function POST(request: Request) {
       You are an expert aesthetic analyst and poetic storyteller. 
       Analyze the following raw Pinterest RSS feed for a user named @${cleanUsername} to determine their true "Aesthetic DNA".
       
-      CRITICAL INSTRUCTION: You MUST be HYPER-SPECIFIC. If you see pins about specific people (like Lewis Hamilton, Vijay Thalapathy), cars, or brands, you MUST explicitly name-drop them in the identity, tags, and description. DO NOT summarize specific things into generic buckets like "Motorsport Enthusiasm" or "Celebrity Admiration". Call them exactly what they are. Make it highly personal!
+      Focus on extracting their conceptual vibe and personality trait based on what they pin. Instead of literally naming celebrities or specific items, summarize them into beautifully named aesthetic categories (e.g., "Contemporary Iconography", "Motorcore Aesthetics", "Ethereal Escapism").
       
-      The XML feed contains their most recent pins, titles, and descriptions. Extract the themes, colors, vibes, and hidden aesthetics based on exactly what they pinned.
+      The XML feed contains their most recent pins, titles, and descriptions. Extract the themes, colors, vibes, and hidden aesthetics.
       
       User's Pinterest RSS Feed:
       ${cleanRssText}
