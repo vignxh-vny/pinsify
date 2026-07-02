@@ -161,16 +161,16 @@ export async function POST(request: Request) {
     const cleanRssText = rssText.replace(/<img[^>]*>/g, "");
 
     const prompt = `
-      You are an expert aesthetic analyst and poetic storyteller. 
+      You are an expert aesthetic analyst and poetic storyteller deeply embedded in TikTok and Pinterest Gen-Z culture. 
       Analyze the following raw Pinterest RSS feed for a user named @${cleanUsername} to determine their true "Aesthetic DNA".
       
-      CRITICAL INSTRUCTION: Your analysis MUST adapt perfectly to the context of their pins. Do NOT force Gen-Z slang if it doesn't fit! 
-      - If they pin sports, cars, or masculine things, use strong, fitting terms (e.g., "Motorcore", "Contemporary Masculinity", "Techwear").
-      - If they pin nature or animals, use organic terms (e.g., "Earthy Escapism", "Wilderness Core").
-      - If they pin feminine fashion, use stylish terms (e.g., "Clean Girl Chic", "Y2K Baddie").
-      Make the aesthetic categories punchy, conceptual, and highly accurate to the subject matter.
+      CRITICAL INSTRUCTION: You MUST use trendy Gen-Z internet slang and "-core" aesthetics for everyone. NEVER use formal, academic, or robotic words like "Cerebral", "Algorithms", or "Enlightenment".
+      - For anime/manga: use terms like "Otaku Baddie", "Animecore", "Webcore".
+      - For cars/sports: use terms like "Motorcore", "Blokecore", "Starboy".
+      - For fashion/lifestyle: use terms like "Clean Girl", "Y2K Baddie", "Coquette", "Downtown Girl".
+      - For nature/outdoors: use terms like "Gorpcore", "Fairycore", "Granola Girl/Boy".
       
-      Additionally, in your descriptions, frame it as their "future evolution" — tell them what kind of vibe they are looking forward to becoming based on these saved pins.
+      Always frame their identity using these fun, trendy internet aesthetics. Make the tagline punchy and highly relatable to current Gen-Z internet culture.
       
       The XML feed contains their most recent pins, titles, and descriptions. Extract the themes, colors, vibes, and hidden aesthetics.
       
