@@ -86,7 +86,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
       {/* The ID Badge */}
       <div
         ref={cardRef}
-        className="relative w-full max-w-[400px] min-h-[650px] bg-[#f4f4f4] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col font-sans"
+        className="relative w-full max-w-[400px] aspect-[9/16] bg-[#f4f4f4] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col font-sans"
         style={{
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0,0,0,0.1)",
         }}
@@ -171,7 +171,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
           <div className="flex">
             {/* Massive Text */}
             <div className="flex flex-col justify-center flex-1">
-              <h1 className="text-black font-black uppercase text-3xl sm:text-4xl leading-[0.85] tracking-tighter break-words drop-shadow-sm" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
+              <h1 className="text-black font-black uppercase text-2xl sm:text-3xl leading-[0.9] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
                 {data.identity.primary}
               </h1>
             </div>
