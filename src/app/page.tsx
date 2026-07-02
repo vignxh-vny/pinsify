@@ -181,6 +181,12 @@ export default function LandingPage() {
             GENERATE ID
           </button>
           
+          <div className="text-center mt-2">
+            <p className="text-[10px] font-black tracking-[0.2em] text-gray-500">
+              * REQUIRES PUBLIC SAVED PINS TO WORK
+            </p>
+          </div>
+          
           <button
             onClick={() => handleAnalyze(true)}
             disabled={!username.trim() || isAnalyzing}

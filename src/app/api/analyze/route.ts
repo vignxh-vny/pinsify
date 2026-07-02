@@ -149,6 +149,13 @@ export async function POST(request: Request) {
     const totalPins = pinMatch.length ? Math.max(...pinMatch) : 0;
     const totalBoards = boardMatch.length ? Math.max(...boardMatch) : 0;
 
+    if (totalPins === 0) {
+      return NextResponse.json(
+        { error: "ACCESS DENIED: No public pins found. You must save pins to a public board for the scanner to work." }, 
+        { status: 400 }
+      );
+    }
+
     // 2. Prepare Prompt for Gemini
     // Strip out image tags to save tokens, we only care about text descriptions/titles
     const cleanRssText = rssText.replace(/<img[^>]*>/g, "");
