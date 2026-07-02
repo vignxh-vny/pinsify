@@ -128,7 +128,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         </div>
 
         {/* Photo Area (Abstract Mesh) */}
-        <div className="w-[85%] mx-auto mt-24 aspect-square border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
+        <div className="w-[85%] mx-auto mt-20 aspect-[4/3] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
           {/* Grid Pattern */}
           <div 
             className="absolute inset-0 opacity-30 mix-blend-overlay"
