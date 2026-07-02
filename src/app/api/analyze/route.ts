@@ -161,10 +161,11 @@ export async function POST(request: Request) {
     const cleanRssText = rssText.replace(/<img[^>]*>/g, "");
 
     const prompt = `
-      You are an expert aesthetic analyst and poetic storyteller. 
+      You are an expert aesthetic analyst and poetic storyteller heavily entrenched in Gen-Z internet culture. 
       Analyze the following raw Pinterest RSS feed for a user named @${cleanUsername} to determine their true "Aesthetic DNA".
       
-      Focus on extracting their conceptual vibe and personality trait based on what they pin. Instead of literally naming celebrities or specific items, summarize them into beautifully named aesthetic categories (e.g., "Contemporary Iconography", "Motorcore Aesthetics", "Ethereal Escapism").
+      Focus on extracting their conceptual vibe and personality trait based on what they pin, but frame it strictly through a hyper-modern, Gen-Z lens! Use popular internet culture terms like "Baddie", "Chic", "Clean Girl", "Y2K", "Downtown Girl", "Coquette", etc. 
+      Instead of literally naming celebrities or being overly formal, summarize their vibe into trendy, punchy Gen-Z aesthetic categories (e.g., "Y2K Motorcore Baddie", "Ethereal Downtown Chic"). Make it fun, sharp, and highly relatable to current internet culture!
       
       The XML feed contains their most recent pins, titles, and descriptions. Extract the themes, colors, vibes, and hidden aesthetics.
       
