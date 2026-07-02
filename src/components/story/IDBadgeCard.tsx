@@ -128,7 +128,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         </div>
 
         {/* Photo Area (Abstract Mesh) */}
-        <div className="w-[85%] mx-auto mt-20 aspect-[4/3] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
+        <div className="w-[85%] mx-auto mt-24 aspect-[16/9] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
           {/* Grid Pattern */}
           <div 
             className="absolute inset-0 opacity-30 mix-blend-overlay"
@@ -171,7 +171,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
           <div className="flex">
             {/* Massive Text */}
             <div className="flex flex-col justify-center flex-1">
-              <h1 className="text-black font-black uppercase text-2xl sm:text-3xl leading-[0.9] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
+              <h1 className="text-black font-black uppercase text-4xl sm:text-5xl leading-[0.85] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
                 {data.identity.primary}
               </h1>
             </div>
