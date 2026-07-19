@@ -150,11 +150,12 @@ export async function POST(request: Request) {
         const cachedData = cachedProfile.data as any;
         const cachedPins = cachedData?.user?.totalPins || 0;
         
-        if (totalPins === cachedPins) {
-          console.log("Pin count unchanged. Returning cached profile for", cleanUsername);
+        // Only regenerate if they added or deleted 5 or more pins
+        if (Math.abs(totalPins - cachedPins) < 5) {
+          console.log(`Pin count changed by less than 5 (${cachedPins} -> ${totalPins}). Returning cached profile for`, cleanUsername);
           return NextResponse.json({ success: true, profileId: cachedProfile.id });
         } else {
-          console.log(`Pin count changed (${cachedPins} -> ${totalPins}). Regenerating profile for ${cleanUsername}`);
+          console.log(`Pin count changed significantly (${cachedPins} -> ${totalPins}). Regenerating profile for ${cleanUsername}`);
         }
       }
     }
