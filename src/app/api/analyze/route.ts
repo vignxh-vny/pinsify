@@ -18,6 +18,7 @@ const StorySchema: Schema = {
         emoji: { type: Type.STRING, description: "A single representative emoji" },
         tagline: { type: Type.STRING, description: "A poetic one-liner summarizing their conceptual vibe" },
         description: { type: Type.STRING, description: "A beautifully written 2-3 sentence paragraph about their curated world and what it says about their personality." },
+        recentKeywords: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Extract 3 highly specific, embarrassing, or funny keywords/phrases based strictly on their 4-5 absolute most recent pins (e.g., 'breakup quotes', 'crying in the club outfits', 'feral cat memes')." },
       },
     },
     colorAura: {
@@ -179,6 +180,8 @@ export async function POST(request: Request) {
       
       CRITICAL ANALYSIS RULE: Do not just look at the first pin. Look at the *frequency* and *volume* of the themes across all the provided pins. 
       If 80% of their pins are fashion and 20% are cooking, their primary title MUST be heavily based on fashion (e.g., "Desi Chic"), with cooking as a secondary tag. Base their identity on what they save the *most*.
+
+      RECENT HYPERFIXATION RULE: Look at the very first 4 or 5 pins in the feed (the most recently saved ones). Extract exactly 3 highly specific keywords/phrases that define their current hyperfixation (e.g., if they are saving sad quotes, return "sad quotes", "breakup energy", "crying").
       
       The XML feed contains their most recent pins, titles, and descriptions. Extract the themes, colors, vibes, and hidden aesthetics.
       

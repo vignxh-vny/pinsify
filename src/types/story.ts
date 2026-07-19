@@ -8,6 +8,7 @@ export interface AestheticIdentity {
   emoji: string;
   tagline: string;
   description: string;
+  recentKeywords?: string[];
 }
 
 export interface ColorAura {

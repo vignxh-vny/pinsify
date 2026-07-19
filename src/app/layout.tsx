@@ -40,9 +40,9 @@ const courier = Courier_Prime({
 });
 
 export const metadata: Metadata = {
-  title: "PinsByMe — Discover Your Aesthetic Identity",
+  title: "PinCheck — Discover Your Aesthetic Identity",
   description:
-    "Turn your Pinterest into a cinematic story about who you are. Discover your aesthetic identity, your colors, your visual soul.",
+    "An AI-powered brutalist Pinterest profile analyzer.",
   keywords: [
     "pinterest",
     "aesthetic",
@@ -54,17 +54,17 @@ export const metadata: Metadata = {
     "wrapped",
   ],
   openGraph: {
-    title: "PinsByMe — Discover Your Aesthetic Identity",
+    title: "PinCheck — Discover Your Aesthetic Identity",
     description:
-      "Your Pinterest boards tell a story. We turn it into a cinematic experience.",
+      "An AI-powered brutalist Pinterest profile analyzer.",
     type: "website",
-    siteName: "PinsByMe",
+    siteName: "PinCheck",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PinsByMe — Discover Your Aesthetic Identity",
+    title: "PinCheck — Discover Your Aesthetic Identity",
     description:
-      "Your Pinterest boards tell a story. We turn it into a cinematic experience.",
+      "An AI-powered brutalist Pinterest profile analyzer.",
   },
 };
 

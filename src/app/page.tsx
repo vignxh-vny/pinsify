@@ -3,10 +3,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function LandingPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [loadingTextIndex, setLoadingTextIndex] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [username, setUsername] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -34,15 +36,33 @@ export default function LandingPage() {
   ];
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let textInterval: NodeJS.Timeout;
+    let progressInterval: NodeJS.Timeout;
+    
     if (isAnalyzing) {
-      interval = setInterval(() => {
+      setLoadingProgress(0);
+      setLoadingTextIndex(0);
+      
+      textInterval = setInterval(() => {
         setLoadingTextIndex((prev) =>
           prev < loadingPhrases.length - 1 ? prev + 1 : prev
         );
-      }, 2000);
+      }, 4000);
+      
+      progressInterval = setInterval(() => {
+        setLoadingProgress((prev) => {
+          if (prev >= 99) return 99;
+          const increment = prev > 85 ? 0.2 : (Math.random() * 2 + 0.5);
+          const next = prev + increment;
+          return next > 99 ? 99 : next;
+        });
+      }, 300);
     }
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearInterval(textInterval);
+      clearInterval(progressInterval);
+    };
   }, [isAnalyzing, loadingPhrases.length]);
 
   const handleAnalyze = async (force: boolean = false) => {
@@ -127,7 +147,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-[#E60023] font-black text-2xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}
           >
-            PINACOLADA
+            PIN CHECK
           </motion.div>
         </motion.div>
 
@@ -290,55 +310,20 @@ export default function LandingPage() {
               }}
             />
 
-            {/* Printing ID Card Animation */}
+            {/* Lottie Loading Animation */}
             <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              initial={{ y: 20, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="relative w-64 h-96 bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.15)] flex flex-col p-6 z-10"
+              className="relative w-80 h-80 z-10 flex items-center justify-center mix-blend-multiply drop-shadow-xl"
             >
-               {/* Card Clip Slot */}
-               <div className="w-16 h-2 border-2 border-black rounded-full mx-auto mb-6 opacity-30" />
-
-               {/* Photo Box scanning */}
-               <div className="w-full h-32 border-2 border-black border-dashed mb-6 relative overflow-hidden flex items-center justify-center bg-gray-50">
-                  <motion.div 
-                    className="absolute inset-0 bg-black/5"
-                    animate={{ top: ["100%", "0%", "100%"] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  />
-                  <motion.div
-                     className="absolute w-full h-[2px] bg-black shadow-[0_0_10px_rgba(0,0,0,0.3)]"
-                     animate={{ top: ["0%", "100%", "0%"] }}
-                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  />
-                  <span className="text-gray-400 text-[10px] font-bold tracking-widest uppercase z-10">RENDERING PROFILE</span>
-               </div>
-
-               {/* Data Lines printing one by one */}
-               <div className="flex flex-col gap-3 flex-1">
-                  <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 1, delay: 0.5, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
-                  <motion.div initial={{ width: "0%" }} animate={{ width: "75%" }} transition={{ duration: 1, delay: 1.2, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
-                  <motion.div initial={{ width: "0%" }} animate={{ width: "90%" }} transition={{ duration: 1, delay: 1.9, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
-                  <motion.div initial={{ width: "0%" }} animate={{ width: "50%" }} transition={{ duration: 1, delay: 2.6, ease: "circOut" }} className="h-4 bg-gray-200 border border-gray-300" />
-               </div>
-               
-               {/* Barcode bottom */}
-               <motion.div 
-                 className="h-10 mt-auto border-t-2 border-black pt-2 flex gap-[2px] justify-between overflow-hidden"
-               >
-                 {Array.from({ length: 25 }).map((_, i) => (
-                   <motion.div 
-                     key={i} 
-                     initial={{ y: "100%" }} 
-                     animate={{ y: "0%" }} 
-                     transition={{ duration: 0.3, delay: 3.5 + (i * 0.05), ease: "easeOut" }}
-                     className="bg-black h-full" 
-                     style={{ width: `${Math.random() * 4 + 1}px` }} 
-                   />
-                 ))}
-               </motion.div>
+              <DotLottieReact
+                src="/talent-search.json"
+                loop
+                autoplay
+              />
             </motion.div>
+
 
             {/* Dynamic Loading Text */}
             <div className="relative z-10 flex flex-col items-center mt-12">
@@ -357,6 +342,17 @@ export default function LandingPage() {
               
               <div className="text-gray-500 text-xs tracking-[0.3em] uppercase mt-2">
                 PLEASE DO NOT CLOSE
+              </div>
+              
+              <div className="w-64 h-1 bg-gray-300 mt-6 overflow-hidden rounded-full shadow-inner">
+                <motion.div 
+                  className="h-full bg-[#E60023]"
+                  animate={{ width: `${loadingProgress}%` }}
+                  transition={{ ease: "linear", duration: 0.3 }}
+                />
+              </div>
+              <div className="text-gray-400 text-[10px] font-mono mt-2 font-bold tracking-widest">
+                {Math.floor(loadingProgress)}%
               </div>
             </div>
           </motion.div>

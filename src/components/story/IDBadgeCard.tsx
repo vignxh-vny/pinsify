@@ -18,7 +18,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
         pixelRatio: 3, // High-res download
       });
       const link = document.createElement("a");
-      link.download = `pinacolada-id-${(data.user.displayName || data.user.username).replace(/\s+/g, "-")}.png`;
+      link.download = `pincheck-id-${(data.user.displayName || data.user.username).replace(/\s+/g, "-")}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -38,12 +38,12 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
       });
       const res = await fetch(dataUrl);
       const blob = await res.blob();
-      const file = new File([blob], `pinacolada-id-${data.user.username}.png`, { type: "image/png" });
+      const file = new File([blob], `pincheck-id-${data.user.username}.png`, { type: "image/png" });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
-          title: "My Pinacolada ID",
-          text: `Check out my Pinacolada Pinterest ID: ${data.identity.primary}!`,
+          title: "My PinCheck ID",
+          text: `Check out my PinCheck Pinterest ID: ${data.identity.primary}!`,
           files: [file],
         });
       } else {
@@ -121,14 +121,12 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
         </div>
 
         {/* Date / Gen Top Right */}
-        <div className="absolute top-8 right-6 z-10">
-          <div className="text-black font-black text-4xl tracking-tighter drop-shadow-sm" style={{ fontFamily: "Impact, sans-serif" }}>
-            20.26
-          </div>
+        <div className="absolute top-8 right-8 text-black font-black text-4xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}>
+          20.26
         </div>
 
         {/* Photo Area (Abstract Mesh) */}
-        <div className="w-[85%] mx-auto mt-24 aspect-[16/9] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
+        <div className="w-[85%] mx-auto mt-24 aspect-[4/3] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
           {/* Grid Pattern */}
           <div 
             className="absolute inset-0 opacity-30 mix-blend-overlay"
@@ -156,16 +154,16 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
           </div>
 
           {/* Circle Stamp */}
-          <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-[#f4f4f4] rounded-full border-[6px] border-[#E60023] flex items-center justify-center rotate-12 z-20 shadow-lg">
-            <div className="text-[#E60023] font-black text-center leading-none tracking-tighter flex flex-col">
-              <span className="text-[20px]">PINA</span>
-              <span className="text-[28px]">COLADA</span>
+          <div className="absolute -bottom-5 -right-5 w-24 h-24 bg-[#f4f4f4] rounded-full border-[5px] border-[#E60023] flex items-center justify-center rotate-[15deg] z-20 shadow-xl overflow-hidden">
+            <div className="text-[#E60023] font-black text-center leading-[0.85] tracking-tighter flex flex-col mt-1">
+              <span className="text-[16px] tracking-widest">PIN</span>
+              <span className="text-[28px] -translate-x-1">CHECK</span>
             </div>
           </div>
         </div>
 
         {/* Main Typography Area */}
-        <div className="flex-1 w-[85%] mx-auto mt-4 flex flex-col justify-center gap-4 pb-6 z-10">
+        <div className="flex-1 w-[85%] mx-auto mt-3 flex flex-col justify-start gap-2 pb-6 z-10">
           
           {/* Name & Identity */}
           <div className="flex">
@@ -178,24 +176,31 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
           </div>
 
           {/* Bottom Black Box */}
-          <div className="bg-[#111] text-white px-3 py-2 rounded-xl flex justify-between items-end border-b-4 border-r-4 border-[#333] shadow-lg mt-2">
-            <div className="flex-1 pr-2 min-w-0">
-              <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide text-gray-300 mb-1 leading-tight border-b border-gray-700 pb-1">
-                {data.identity.secondary.join(" / ")}
+          <div className="bg-[#111] text-white px-3 py-3 rounded-xl border-b-4 border-r-4 border-[#333] shadow-lg mt-1 relative flex flex-col">
+            <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide text-gray-300 mb-1 leading-tight border-b border-gray-700 pb-1">
+              {data.identity.secondary.join(" / ")}
+            </p>
+            <p className="text-[13px] sm:text-[15px] font-black leading-snug uppercase tracking-tight text-white drop-shadow-md mt-2 mb-1 pr-1">
+              "{data.identity.tagline}"
+            </p>
+            <div className="mt-3 pr-20 min-h-[46px] flex flex-col justify-end">
+              {data.identity.recentKeywords && data.identity.recentKeywords.length > 0 && (
+                <p className="text-[7px] font-bold uppercase tracking-wide text-[#E60023] leading-tight line-clamp-1 mb-1">
+                  CURRENT FIXATION: <span className="text-gray-300">{data.identity.recentKeywords.join(" / ")}</span>
+                </p>
+              )}
+              <p className="text-[7px] font-bold uppercase tracking-wide text-[#E60023] leading-tight line-clamp-1">
+                ALSO SAVES: <span className="text-gray-300">{data.themes[1]?.name || "MIXED VIBES"}</span>
               </p>
-              <p className="text-[10px] sm:text-xs font-black leading-tight uppercase tracking-tight text-white drop-shadow-md mt-1">
-                "{data.identity.tagline}"
-              </p>
-              <p className="text-[7px] text-gray-400 mt-2 font-mono uppercase">
+              <p className="text-[7px] text-gray-500 mt-1 font-mono uppercase">
                 {data.user.totalPins} PINS &bull; {data.user.totalBoards} BOARDS
               </p>
             </div>
             
             {/* Barcode (CSS simulated) */}
-            <div className="w-16 h-12 flex flex-col justify-end bg-[#f4f4f4] p-1 rounded-sm shadow-inner">
+            <div className="absolute bottom-3 right-3 w-16 h-[46px] flex flex-col justify-end bg-[#f4f4f4] p-1 rounded-sm shadow-inner shrink-0">
               <div className="flex-1 flex gap-[2px] w-full items-end justify-center">
                 {Array.from({ length: 12 }).map((_, i) => {
-                  // deterministic height and width for barcode based on index
                   const heights = [100, 80, 100, 90, 100, 60, 100, 100, 70, 90, 100, 80];
                   const widths = [2, 1, 3, 1, 2, 1, 2, 1, 2, 3, 1, 2];
                   return (
