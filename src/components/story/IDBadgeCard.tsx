@@ -126,7 +126,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
         </div>
 
         {/* Photo Area (Abstract Mesh) */}
-        <div className="w-[85%] mx-auto mt-24 aspect-[4/3] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
+        <div className="w-[92%] sm:w-[85%] mx-auto mt-24 aspect-[4/3] border-4 border-black relative bg-[#E60023] overflow-hidden shrink-0">
           {/* Grid Pattern */}
           <div 
             className="absolute inset-0 opacity-30 mix-blend-overlay"
@@ -163,7 +163,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
         </div>
 
         {/* Main Typography Area */}
-        <div className="flex-1 w-[85%] mx-auto mt-3 flex flex-col justify-start gap-2 pb-6 z-10">
+        <div className="flex-1 w-[92%] sm:w-[85%] mx-auto mt-3 flex flex-col justify-start gap-2 pb-6 z-10">
           
           {/* Name & Identity */}
           <div className="flex">
