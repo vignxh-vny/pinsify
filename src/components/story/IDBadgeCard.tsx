@@ -213,8 +213,6 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
               </div>
             </div>
           </div>
-
-          </div>
           
           {/* WATERMARK */}
           <div className="w-full text-center mt-auto pt-2">
