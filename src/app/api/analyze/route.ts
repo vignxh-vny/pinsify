@@ -161,23 +161,31 @@ export async function POST(request: Request) {
     const cleanRssText = rssText.replace(/<img[^>]*>/g, "");
 
     const prompt = `
-      You are an expert aesthetic analyst and poetic storyteller deeply embedded in TikTok and Pinterest Gen-Z culture. 
+      You are a funny, casual Gen-Z best friend looking at someone's Pinterest board. You know that Pinterest is just a fantasy board and that in reality, they probably don't do half the things they save.
       Analyze the following raw Pinterest RSS feed for a user named @${cleanUsername} to determine their true "Aesthetic DNA".
       
-      CRITICAL INSTRUCTION: You MUST use trendy Gen-Z internet slang and "-core" aesthetics for everyone. NEVER use formal, academic, or robotic words like "Cerebral", "Algorithms", or "Enlightenment".
-      - For anime/manga: use terms like "Otaku Baddie", "Animecore", "Webcore".
-      - For cars/sports: use terms like "Motorcore", "Blokecore", "Starboy".
-      - For fashion/lifestyle: use terms like "Clean Girl", "Y2K Baddie", "Coquette", "Downtown Girl".
-      - For nature/outdoors: use terms like "Gorpcore", "Fairycore", "Granola Girl/Boy".
+      CRITICAL INSTRUCTION: Your tone MUST be casual, banter-heavy, and use slang like "blud", "chic", "knower".
+      NEVER use aspirational terms like "Productivity Princess", "Creator", or "Dreamer" because they don't actually do anything in reality—they just save pins.
       
-      Always frame their identity using these fun, trendy internet aesthetics. Make the tagline punchy and highly relatable to current Gen-Z internet culture.
+      RULES FOR THE MAIN TITLE:
+      - If they save fashion/beauty: The title MUST include the word "Chic" (e.g., "Desi Chic", "K-Pop Chic", "Downtown Chic").
+      - If they save nature/sunsets: The title MUST be something funny like "Blud Loves Nature" or "Chronically Indoors Grass Toucher".
+      - If they save sports/cars/music: The title MUST be specific like "F1 Ball Knower" or "High-Octane Metal Head".
+      - If they save productivity/study pins: DO NOT call them a princess or boss. Call them a "Delusional Planner" or "Aesthetic Procrastinator".
+      
+      For the tagline, make it a funny, casual roast about how their Pinterest board is a fantasy (e.g., "Saving 100 recipes but still ordering UberEats." or "Planning a life you will never actually live.").
+      
+      IMPORTANT: Adjust the terms to fit the user's perceived gender or vibe based on their pins! Keep it fun, extremely casual, and like a group chat roast.
+      
+      CRITICAL ANALYSIS RULE: Do not just look at the first pin. Look at the *frequency* and *volume* of the themes across all the provided pins. 
+      If 80% of their pins are fashion and 20% are cooking, their primary title MUST be heavily based on fashion (e.g., "Desi Chic"), with cooking as a secondary tag. Base their identity on what they save the *most*.
       
       The XML feed contains their most recent pins, titles, and descriptions. Extract the themes, colors, vibes, and hidden aesthetics.
       
       User's Pinterest RSS Feed:
       ${cleanRssText}
       
-      Write beautifully and cinematically. Return the exact JSON structure requested.
+      Return the exact JSON structure requested.
     `;
 
     // 3. Call Gemini AI (with retries for high demand)
@@ -196,7 +204,7 @@ export async function POST(request: Request) {
         break; // Success!
       } catch (err: any) {
         if (err.status === 503 && retries > 1) {
-          console.warn("Gemini 2.5 is overloaded, retrying in 2 seconds...");
+          console.warn("Gemini is overloaded, retrying in 2 seconds...");
           await new Promise(r => setTimeout(r, 2000));
           retries--;
         } else {

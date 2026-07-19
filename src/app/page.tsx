@@ -8,7 +8,22 @@ export default function LandingPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [loadingTextIndex, setLoadingTextIndex] = useState(0);
   const [username, setUsername] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const router = useRouter();
+
+  const filteredHistory = username.trim() === "" 
+    ? [] 
+    : history.filter(h => h.toLowerCase().includes(username.toLowerCase()));
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("pinsbyme_history");
+      if (stored) setHistory(JSON.parse(stored));
+    } catch (e) {
+      console.error("Failed to load history", e);
+    }
+  }, []);
 
   const loadingPhrases = [
     "SCANNING PINTEREST BOARDS...",
@@ -33,6 +48,17 @@ export default function LandingPage() {
   const handleAnalyze = async (force: boolean = false) => {
     if (!username.trim()) return;
     setIsAnalyzing(true);
+    
+    const trimmedUser = username.trim();
+    try {
+      setHistory(prev => {
+        const newHistory = [trimmedUser, ...prev.filter(u => u.toLowerCase() !== trimmedUser.toLowerCase())].slice(0, 5);
+        localStorage.setItem("pinsbyme_history", JSON.stringify(newHistory));
+        return newHistory;
+      });
+    } catch (e) {
+      console.error("Failed to save history", e);
+    }
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -156,20 +182,65 @@ export default function LandingPage() {
           className="w-full flex flex-col gap-4"
         >
           <div className="relative">
-            <div className="absolute -top-3 left-4 bg-white text-black px-2 text-[10px] font-black tracking-widest uppercase z-10 border-2 border-black">
-              TARGET USERNAME
-            </div>
-            <div className="flex items-center bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:border-[#E60023] transition-colors w-full">
+            <div className="flex items-center bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:border-[#E60023] transition-colors w-full relative z-20">
               <span className="pl-4 text-xl font-bold text-black select-none">@</span>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAnalyze(false)}
-                placeholder="USERNAME"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setShowHistory(false);
+                    handleAnalyze(false);
+                  }
+                }}
+                onFocus={() => setShowHistory(true)}
+                onBlur={() => setShowHistory(false)}
+                placeholder="PINTEREST USERNAME"
                 className="w-full bg-transparent p-4 pl-1 text-xl font-bold uppercase tracking-widest text-black placeholder-gray-400 focus:outline-none rounded-none"
               />
             </div>
+            
+            <AnimatePresence>
+              {showHistory && filteredHistory.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-30"
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  <div className="px-4 py-2 bg-black text-white text-[10px] font-black tracking-widest uppercase flex justify-between items-center">
+                    <span>Recent Searches</span>
+                    <button 
+                      onClick={() => {
+                        setHistory([]);
+                        localStorage.removeItem("pinsbyme_history");
+                      }}
+                      className="hover:text-[#E60023] transition-colors"
+                    >
+                      CLEAR
+                    </button>
+                  </div>
+                  <ul>
+                    {filteredHistory.map((histUser, idx) => (
+                      <li key={idx}>
+                        <button
+                          onClick={() => {
+                            setUsername(histUser);
+                            setShowHistory(false);
+                          }}
+                          className="w-full text-left px-4 py-3 text-lg font-bold uppercase tracking-widest text-black hover:bg-[#E60023] hover:text-white transition-colors border-b-2 border-black last:border-b-0"
+                        >
+                          @{histUser}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <button

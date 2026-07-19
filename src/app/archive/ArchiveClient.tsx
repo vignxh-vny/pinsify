@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Folder, FolderOpen, User as UserIcon, Calendar, Hash } from "lucide-react";
+import { Folder, FolderOpen, User as UserIcon, Calendar, Hash, Copy, Check } from "lucide-react";
 import { StoryData } from "@/types/story";
 import IDBadgeCard from "@/components/story/IDBadgeCard";
 
@@ -12,34 +12,55 @@ type ProfileGroup = {
 
 export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup[] }) {
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopy = (e: React.MouseEvent, text: string, id: string) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {userGroups.map((group) => {
         const isExpanded = expandedUserId === group.user.id;
         const latestProfile = group.profiles[0];
+        const latestData = latestProfile?.data as StoryData;
+        const displayName = latestData?.user?.displayName || group.user.name || group.user.email;
 
         return (
           <div 
             key={group.user.id}
-            className={`border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 ${isExpanded ? 'md:col-span-2 xl:col-span-3' : ''}`}
+            className={`border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 flex flex-col ${isExpanded ? 'md:col-span-2 xl:col-span-3' : 'h-full'}`}
           >
             {/* Folder Header - Clickable */}
             <div 
-              className="p-4 cursor-pointer hover:bg-gray-100 flex items-center justify-between"
+              className={`p-4 cursor-pointer hover:bg-gray-100 flex flex-col justify-between min-h-[120px] ${isExpanded ? '' : 'flex-1'}`}
               onClick={() => setExpandedUserId(isExpanded ? null : group.user.id)}
             >
-              <div className="flex items-center gap-3">
-                {isExpanded ? <FolderOpen size={32} /> : <Folder size={32} />}
-                <div>
-                  <h2 className="text-xl font-black uppercase tracking-widest">{group.user.name || group.user.email}</h2>
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1 mt-1">
-                    <Hash size={12} /> ID: {group.user.id}
-                  </p>
+              <div className="flex justify-between items-start w-full mb-4">
+                <div className="flex-shrink-0 text-black">
+                  {isExpanded ? <FolderOpen size={32} /> : <Folder size={32} />}
+                </div>
+                <div className="bg-[#E60023] flex-shrink-0 text-white px-3 py-1 font-black text-sm shadow-md">
+                  {group.profiles.length} FILES
                 </div>
               </div>
-              <div className="bg-[#E60023] text-white px-3 py-1 font-black text-sm shadow-md">
-                {group.profiles.length} FILES
+              <div className="min-w-0 w-full mt-auto">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest truncate">{displayName}</h2>
+                  <button 
+                    onClick={(e) => handleCopy(e, displayName, group.user.id)}
+                    className="p-1.5 hover:bg-gray-200 rounded transition-colors text-gray-500 hover:text-black flex-shrink-0"
+                    title="Copy Username"
+                  >
+                    {copiedId === group.user.id ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                  </button>
+                </div>
+                <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1 mt-1 truncate">
+                  <Hash size={12} className="flex-shrink-0" /> <span className="truncate">ID: {group.user.id}</span>
+                </p>
               </div>
             </div>
 
@@ -62,10 +83,10 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
                           <span>{idx === 0 ? "LATEST" : `v${group.profiles.length - idx}`}</span>
                           <span>{date} {time}</span>
                         </div>
-                        <div className="bg-white border-x-4 border-b-4 border-black p-4 relative" style={{ transform: "scale(0.85)", transformOrigin: "top left", width: "117.6%", height: "900px" }}>
+                        <div className="bg-[#f4f4f4] border-x-4 border-b-4 border-black relative overflow-hidden flex justify-center items-start" style={{ height: "600px" }}>
                            {/* Render the actual ID Badge Card but scaled down slightly to fit nicely */}
-                           <div className="pointer-events-none">
-                             <IDBadgeCard data={data} />
+                           <div className="pointer-events-none w-full flex justify-center origin-top" style={{ transform: "scale(0.75)", marginTop: "-10px" }}>
+                             <IDBadgeCard data={data} isArchive={true} />
                            </div>
                         </div>
                       </div>

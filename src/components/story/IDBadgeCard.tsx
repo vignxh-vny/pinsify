@@ -5,7 +5,7 @@ import { StoryData } from "@/types/story";
 import { Download, Share2 } from "lucide-react";
 import * as htmlToImage from "html-to-image";
 
-export default function IDBadgeCard({ data }: { data: StoryData }) {
+export default function IDBadgeCard({ data, isArchive = false }: { data: StoryData, isArchive?: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -82,7 +82,7 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-dvh p-4 sm:p-8">
+    <div className={`flex flex-col items-center justify-center p-4 sm:p-8 ${isArchive ? 'w-full' : 'min-h-dvh'}`}>
       {/* The ID Badge */}
       <div
         ref={cardRef}
@@ -165,29 +165,29 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
         </div>
 
         {/* Main Typography Area */}
-        <div className="flex-1 w-[85%] mx-auto mt-6 flex flex-col justify-between pb-8 z-10">
+        <div className="flex-1 w-[85%] mx-auto mt-4 flex flex-col justify-center gap-4 pb-6 z-10">
           
           {/* Name & Identity */}
           <div className="flex">
             {/* Massive Text */}
             <div className="flex flex-col justify-center flex-1">
-              <h1 className="text-black font-black uppercase text-4xl sm:text-5xl leading-[0.85] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
+              <h1 className="text-black font-black uppercase text-3xl sm:text-4xl leading-[0.85] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
                 {data.identity.primary}
               </h1>
             </div>
           </div>
 
           {/* Bottom Black Box */}
-          <div className="bg-[#111] text-white p-4 rounded-xl flex justify-between items-end border-b-4 border-r-4 border-[#333] shadow-lg">
-            <div className="flex-1 pr-4">
-              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wide text-gray-300 mb-1 leading-tight border-b border-gray-700 pb-1">
+          <div className="bg-[#111] text-white px-3 py-2 rounded-xl flex justify-between items-end border-b-4 border-r-4 border-[#333] shadow-lg mt-2">
+            <div className="flex-1 pr-2 min-w-0">
+              <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide text-gray-300 mb-1 leading-tight border-b border-gray-700 pb-1">
                 {data.identity.secondary.join(" / ")}
               </p>
-              <p className="text-sm sm:text-base font-black leading-tight uppercase tracking-tight text-white drop-shadow-md">
+              <p className="text-[10px] sm:text-xs font-black leading-tight uppercase tracking-tight text-white drop-shadow-md mt-1">
                 "{data.identity.tagline}"
               </p>
-              <p className="text-[8px] sm:text-[10px] text-gray-400 mt-2 font-mono uppercase">
-                {data.user.totalPins} PINS &bull; {data.user.totalBoards} BOARDS &bull; {new Date().getFullYear()}
+              <p className="text-[7px] text-gray-400 mt-2 font-mono uppercase">
+                {data.user.totalPins} PINS &bull; {data.user.totalBoards} BOARDS
               </p>
             </div>
             
@@ -213,25 +213,27 @@ export default function IDBadgeCard({ data }: { data: StoryData }) {
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-8 flex items-center gap-4 z-10">
-        <button
-          onClick={handleDownload}
-          disabled={isProcessing}
-          className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
-        >
-          <Download size={18} />
-          {isProcessing ? "Processing..." : "Save ID"}
-        </button>
+      {!isArchive && (
+        <div className="mt-8 flex items-center gap-4 z-10">
+          <button
+            onClick={handleDownload}
+            disabled={isProcessing}
+            className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+          >
+            <Download size={18} />
+            {isProcessing ? "Processing..." : "Save ID"}
+          </button>
 
-        <button
-          onClick={handleShare}
-          disabled={isProcessing}
-          className="flex items-center gap-2 bg-[#E60023] text-white px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
-        >
-          <Share2 size={18} />
-          Share
-        </button>
-      </div>
+          <button
+            onClick={handleShare}
+            disabled={isProcessing}
+            className="flex items-center gap-2 bg-[#E60023] text-white px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+          >
+            <Share2 size={18} />
+            Share
+          </button>
+        </div>
+      )}
     </div>
   );
 }
