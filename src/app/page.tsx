@@ -145,7 +145,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[#E60023] font-black text-2xl tracking-tighter" style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
+            className="text-[#E60023] font-black text-2xl tracking-normal" style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
           >
             PIN CHECK
           </motion.div>
@@ -158,7 +158,7 @@ export default function LandingPage() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-black font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.8] tracking-tighter z-10"
+              className="text-black font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.8] tracking-normal z-10"
               style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
             >
               AESTHETIC
@@ -169,7 +169,7 @@ export default function LandingPage() {
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.85] tracking-tighter"
+              className="text-white font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.85] tracking-normal"
               style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
             >
               SCANNER
