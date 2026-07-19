@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Syne, Cormorant_Garamond, Inter, Playfair_Display, Courier_Prime } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const syne = Syne({
@@ -98,6 +99,7 @@ export default function RootLayout({
             {children}
           </div>
         </div>
+        <Analytics />
       </body>
     </html>
   );
