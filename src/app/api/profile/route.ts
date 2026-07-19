@@ -20,7 +20,17 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ data: profile.data });
+    // Fetch past history for this user
+    const history = await prisma.aestheticProfile.findMany({
+      where: { userId: profile.userId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        createdAt: true,
+      }
+    });
+
+    return NextResponse.json({ data: profile.data, history });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
   }

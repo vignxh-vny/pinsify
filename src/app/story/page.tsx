@@ -7,6 +7,7 @@ import IDBadgeCard from "@/components/story/IDBadgeCard";
 
 function StoryViewer() {
   const [data, setData] = useState(mockStoryData);
+  const [history, setHistory] = useState<{id: string, createdAt: string}[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ function StoryViewer() {
         .then((json) => {
           if (json.data) {
             setData(json.data);
+            setHistory(json.history || []);
           }
         })
         .finally(() => setIsLoading(false));
@@ -44,8 +46,8 @@ function StoryViewer() {
           background: `radial-gradient(circle at 50% 50%, var(--accent-violet) 0%, transparent 70%)`
         }}
       />
-      <div className="relative z-10 w-full h-full flex items-center justify-center">
-        <IDBadgeCard data={data} />
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-4">
+        <IDBadgeCard data={data} history={history} />
       </div>
     </main>
   );

@@ -2,10 +2,11 @@
 
 import { useRef, useState } from "react";
 import { StoryData } from "@/types/story";
-import { Download, Share2 } from "lucide-react";
+import { Download, Share2, History } from "lucide-react";
 import * as htmlToImage from "html-to-image";
+import Link from "next/link";
 
-export default function IDBadgeCard({ data, isArchive = false }: { data: StoryData, isArchive?: boolean }) {
+export default function IDBadgeCard({ data, history = [], isArchive = false }: { data: StoryData, history?: {id: string, createdAt: string}[], isArchive?: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -217,9 +218,35 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
         </div>
       </div>
 
+      {/* User History (Past Scans) */}
+      {!isArchive && history && history.length > 1 && (
+        <div className="mt-8 w-full max-w-[400px] bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 z-10 flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-white/70 font-black tracking-widest text-xs uppercase">
+            <History size={14} />
+            <span>Past Scans (History)</span>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+            {history.map((h, i) => (
+              <Link 
+                key={h.id} 
+                href={`/story?id=${h.id}`}
+                className="shrink-0 bg-white/10 hover:bg-white/20 transition-colors border border-white/5 rounded-lg px-4 py-2 flex flex-col items-center justify-center min-w-[100px]"
+              >
+                <span className="text-white font-bold text-sm tracking-wide">
+                  {i === 0 ? "LATEST" : `V${history.length - i}`}
+                </span>
+                <span className="text-white/50 text-[10px] uppercase font-mono">
+                  {new Date(h.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons */}
       {!isArchive && (
-        <div className="mt-8 flex items-center gap-4 z-10">
+        <div className="mt-6 flex items-center gap-4 z-10">
           <button
             onClick={handleDownload}
             disabled={isProcessing}
