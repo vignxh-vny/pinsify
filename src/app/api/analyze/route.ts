@@ -211,7 +211,7 @@ export async function POST(request: Request) {
           await new Promise(r => setTimeout(r, 2000));
           retries--;
         } else if (err.status === 429) {
-          throw new Error("Gemini AI daily limit exceeded. Please try again tomorrow!");
+          throw new Error("System daily limit exceeded. Please try again tomorrow!");
         } else {
           throw err;
         }
@@ -264,7 +264,7 @@ export async function POST(request: Request) {
     // Check if it's our custom quota error
     if (error instanceof Error && error.message.includes("daily limit exceeded")) {
       return NextResponse.json(
-        { error: "Wow, we went viral! Google Gemini's daily AI limit has been maxed out. Please try again tomorrow." },
+        { error: "Wow, we went viral! Our core scanner network's daily limit has been maxed out. Please try again tomorrow." },
         { status: 429 }
       );
     }
