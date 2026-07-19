@@ -98,25 +98,7 @@ export async function POST(request: Request) {
 
     const cleanUsername = username.replace("@", "");
 
-    // Check if we already have this user cached to save AI tokens
-    if (!body.force) {
-      const dummyEmail = `${cleanUsername}@pinsbyme.local`;
-      const existingUser = await prisma.user.findUnique({
-        where: { email: dummyEmail },
-        include: { 
-          aestheticProfiles: {
-            orderBy: { createdAt: 'desc' },
-            take: 1
-          } 
-        }
-      });
-
-      if (existingUser && existingUser.aestheticProfiles.length > 0) {
-        console.log("Returning cached profile for", cleanUsername);
-        return NextResponse.json({ success: true, profileId: existingUser.aestheticProfiles[0].id });
-      }
-    }
-
+    // We will check cache AFTER fetching Pinterest data to see if their pin count changed.
     // 1. Fetch RSS Feed and Profile HTML
     const rssUrl = `https://www.pinterest.com/${cleanUsername}/feed.rss`;
     const profileUrl = `https://www.pinterest.com/${cleanUsername}/`;
@@ -149,6 +131,33 @@ export async function POST(request: Request) {
     const boardMatch = [...profileHtml.matchAll(/"board_count":(\d+)/g)].map(m => parseInt(m[1]));
     const totalPins = pinMatch.length ? Math.max(...pinMatch) : 0;
     const totalBoards = boardMatch.length ? Math.max(...boardMatch) : 0;
+
+    // Check Cache: Only use cached profile if totalPins hasn't changed (meaning they haven't saved anything new)
+    if (!body.force) {
+      const dummyEmail = `${cleanUsername}@pinsbyme.local`;
+      const existingUser = await prisma.user.findUnique({
+        where: { email: dummyEmail },
+        include: { 
+          aestheticProfiles: {
+            orderBy: { createdAt: 'desc' },
+            take: 1
+          } 
+        }
+      });
+
+      if (existingUser && existingUser.aestheticProfiles.length > 0) {
+        const cachedProfile = existingUser.aestheticProfiles[0];
+        const cachedData = cachedProfile.data as any;
+        const cachedPins = cachedData?.user?.totalPins || 0;
+        
+        if (totalPins === cachedPins) {
+          console.log("Pin count unchanged. Returning cached profile for", cleanUsername);
+          return NextResponse.json({ success: true, profileId: cachedProfile.id });
+        } else {
+          console.log(`Pin count changed (${cachedPins} -> ${totalPins}). Regenerating profile for ${cleanUsername}`);
+        }
+      }
+    }
 
     if (totalPins === 0) {
       return NextResponse.json(
