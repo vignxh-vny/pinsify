@@ -75,6 +75,8 @@ export const viewport: Viewport = {
   themeColor: "#050508",
 };
 
+import { Analytics } from "@vercel/analytics/react";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -96,6 +98,7 @@ export default function RootLayout({
           {/* Main Content */}
           <div className="relative z-10 h-full w-full overflow-y-auto overflow-x-hidden hide-scrollbar">
             {children}
+            <Analytics />
           </div>
         </div>
       </body>
