@@ -264,7 +264,7 @@ export async function POST(request: Request) {
     // Check if it's our custom quota error
     if (error instanceof Error && error.message.includes("daily limit exceeded")) {
       return NextResponse.json(
-        { error: "Wow, we went viral! Our core scanner network's daily limit has been maxed out. Please try again tomorrow." },
+        { error: "We are too broke to afford more server bandwidth today. Daily scan limit reached. Please try again tomorrow." },
         { status: 429 }
       );
     }
