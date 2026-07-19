@@ -121,7 +121,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
         </div>
 
         {/* Date / Gen Top Right */}
-        <div className="absolute top-8 right-8 text-black font-black text-4xl tracking-tighter" style={{ fontFamily: "Impact, sans-serif" }}>
+        <div className="absolute top-8 right-8 text-black font-black text-4xl tracking-tighter" style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}>
           20.26
         </div>
 
@@ -148,7 +148,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
 
           {/* User Initial / Avatar Placeholder */}
           <div className="absolute inset-0 flex items-center justify-center">
-             <div className="text-white/80 font-black text-9xl tracking-tighter mix-blend-overlay" style={{ fontFamily: "Impact, sans-serif" }}>
+             <div className="text-white/80 font-black text-9xl tracking-tighter mix-blend-overlay" style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}>
                 {(data.user.displayName || data.user.username).charAt(0).toUpperCase()}
              </div>
           </div>
@@ -169,7 +169,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
           <div className="flex">
             {/* Massive Text */}
             <div className="flex flex-col justify-center flex-1">
-              <h1 className="text-black font-black uppercase text-3xl sm:text-4xl leading-[0.85] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "Impact, sans-serif", textWrap: "balance" }}>
+              <h1 className="text-black font-black uppercase text-3xl sm:text-4xl leading-[0.85] tracking-tighter break-words drop-shadow-sm line-clamp-3" style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif", textWrap: "balance" }}>
                 {data.identity.primary}
               </h1>
             </div>

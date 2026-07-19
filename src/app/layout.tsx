@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Cormorant_Garamond, Inter, Playfair_Display, Courier_Prime } from "next/font/google";
+import { Syne, Cormorant_Garamond, Inter, Playfair_Display, Courier_Prime, Anton } from "next/font/google";
 import "./globals.css";
 
 const syne = Syne({
@@ -7,6 +7,13 @@ const syne = Syne({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700", "800"],
+});
+
+const anton = Anton({
+  variable: "--next-font-anton",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400"],
 });
 
 const cormorant = Cormorant_Garamond({
@@ -85,7 +92,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${cormorant.variable} ${inter.variable} ${playfair.variable} ${courier.variable} dark`}
+      className={`${syne.variable} ${cormorant.variable} ${inter.variable} ${playfair.variable} ${courier.variable} ${anton.variable} dark`}
     >
       <body className="antialiased bg-black text-[var(--text-primary)] selection:bg-[var(--accent-violet)] selection:text-white flex items-center justify-center min-h-dvh sm:p-4 overflow-hidden">
         {/* Mobile Viewport Container */}
