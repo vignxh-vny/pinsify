@@ -43,7 +43,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: "My PinCheck ID",
-          text: `Check out my PinCheck Pinterest ID: ${data.identity.primary}!`,
+          text: `Check out my PinCheck Pinterest ID: ${data.identity.primary}! Get yours at pincheck.vercel.app`,
           files: [file],
         });
       } else {
@@ -212,6 +212,15 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
                 {data.user.username.toUpperCase().substring(0, 10)}
               </div>
             </div>
+          </div>
+
+          </div>
+          
+          {/* WATERMARK */}
+          <div className="w-full text-center mt-auto pt-2">
+            <span className="text-[9px] font-black tracking-[0.3em] text-black/30 uppercase bg-[#f4f4f4] px-2 relative z-20">
+              PINCHECK.VERCEL.APP
+            </span>
           </div>
 
         </div>
