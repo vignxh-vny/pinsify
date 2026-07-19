@@ -10,6 +10,7 @@ export default function LandingPage() {
   const [loadingTextIndex, setLoadingTextIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [username, setUsername] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const router = useRouter();
@@ -68,6 +69,7 @@ export default function LandingPage() {
   const handleAnalyze = async (force: boolean = false) => {
     if (!username.trim()) return;
     setIsAnalyzing(true);
+    setErrorMsg("");
     
     const trimmedUser = username.trim();
     try {
@@ -90,11 +92,11 @@ export default function LandingPage() {
       if (res.ok) {
         router.push(`/story?id=${data.profileId}`);
       } else {
-        alert("Error: " + data.error);
+        setErrorMsg(data.error);
         setIsAnalyzing(false);
       }
     } catch {
-      alert("Something went wrong analyzing your Pinterest.");
+      setErrorMsg("Something went wrong analyzing your Pinterest.");
       setIsAnalyzing(false);
     }
   };
@@ -271,6 +273,17 @@ export default function LandingPage() {
           >
             GENERATE ID
           </button>
+          
+          {errorMsg && (
+            <motion.div 
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full bg-black text-white p-4 text-xs sm:text-sm font-bold uppercase tracking-widest border-4 border-[#E60023] shadow-[4px_4px_0px_0px_rgba(230,0,35,1)] mt-4"
+            >
+              <span className="text-[#E60023]">SYSTEM WARNING: </span>
+              {errorMsg}
+            </motion.div>
+          )}
           
           <div className="text-center mt-2">
             <p className="text-[10px] font-black tracking-[0.2em] text-gray-500">

@@ -210,6 +210,8 @@ export async function POST(request: Request) {
           console.warn("Gemini is overloaded, retrying in 2 seconds...");
           await new Promise(r => setTimeout(r, 2000));
           retries--;
+        } else if (err.status === 429) {
+          throw new Error("Gemini AI daily limit exceeded. Please try again tomorrow!");
         } else {
           throw err;
         }
@@ -257,7 +259,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, profileId: profile.id });
 
   } catch (error: any) {
-    console.error("Analysis Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("API Error:", error);
+    
+    // Check if it's our custom quota error
+    if (error instanceof Error && error.message.includes("daily limit exceeded")) {
+      return NextResponse.json(
+        { error: "Wow, we went viral! Google Gemini's daily AI limit has been maxed out. Please try again tomorrow." },
+        { status: 429 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: "Failed to generate aesthetic profile." },
+      { status: 500 }
+    );
   }
 }
