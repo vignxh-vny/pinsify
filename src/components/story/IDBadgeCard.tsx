@@ -235,7 +235,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
 
       {/* Action Buttons */}
       {!isArchive && (
-        <div className="mt-8 flex items-center gap-4 z-10">
+        <div className="mt-8 flex items-center gap-4 z-10 relative">
           <button
             onClick={handleDownload}
             disabled={isProcessing}
@@ -245,14 +245,21 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
             {isProcessing ? "Processing..." : "Save ID"}
           </button>
 
-          <button
-            onClick={handleShare}
-            disabled={isProcessing}
-            className="flex items-center gap-2 bg-[#E60023] text-white px-6 py-3 rounded-full font-bold shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
-          >
-            <Share2 size={18} />
-            Share
-          </button>
+          <div className="relative">
+            {/* Floating Tooltip to encourage sharing */}
+            <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-black text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg animate-bounce pointer-events-none before:content-[''] before:absolute before:-bottom-1 before:left-1/2 before:-translate-x-1/2 before:w-2 before:h-2 before:bg-black before:rotate-45">
+              Dare Your Friends! 🔥
+            </div>
+            
+            <button
+              onClick={handleShare}
+              disabled={isProcessing}
+              className="flex items-center gap-2 bg-[#E60023] text-white px-8 py-3 rounded-full font-bold shadow-[0_0_15px_rgba(230,0,35,0.5)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 animate-pulse relative overflow-hidden"
+            >
+              <Share2 size={18} />
+              Share Link
+            </button>
+          </div>
         </div>
       )}
     </div>
