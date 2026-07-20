@@ -61,35 +61,39 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
               className={`p-4 cursor-pointer hover:bg-gray-100 flex flex-col justify-between min-h-[120px] ${isExpanded ? '' : 'flex-1'}`}
               onClick={() => setExpandedUserId(isExpanded ? null : group.user.id)}
             >
-              <div className="flex justify-between items-start w-full mb-4">
+              <div className="flex justify-between items-start w-full mb-2 gap-2">
                 <div className="flex-shrink-0 text-black">
                   {isExpanded ? <FolderOpen size={32} /> : <Folder size={32} />}
                 </div>
-                <div className="bg-[#E60023] flex-shrink-0 text-white px-3 py-1 font-black text-sm shadow-md">
-                  {group.profiles.length} FILES
+                <div className="bg-[#E60023] flex-shrink text-white px-2 py-1 font-black text-xs sm:text-sm shadow-md truncate" title={group.user.email?.split('@')[0] || 'USER'}>
+                  @{group.user.email?.split('@')[0] || 'USER'}
                 </div>
               </div>
               <div className="min-w-0 w-full mt-auto">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest truncate">{displayName}</h2>
-                  <button 
-                    onClick={(e) => handleCopy(e, displayName, group.user.id)}
-                    className="p-1.5 hover:bg-gray-200 rounded transition-colors text-gray-500 hover:text-black flex-shrink-0"
-                    title="Copy Username"
-                  >
-                    {copiedId === group.user.id ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
-                  </button>
-                  <button 
-                    onClick={(e) => handleDeleteUser(e, group.user.id)}
-                    disabled={isDeleting === group.user.id}
-                    className="p-1.5 hover:bg-red-100 rounded transition-colors text-gray-500 hover:text-red-600 flex-shrink-0 disabled:opacity-50"
-                    title="Delete User & Data"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                <div className="flex justify-between items-end w-full">
+                  <div className="text-[10px] sm:text-xs font-black text-gray-600 uppercase tracking-widest">
+                    {group.profiles.length} FILE{group.profiles.length !== 1 ? 'S' : ''}
+                  </div>
+                  <div className="flex gap-1 flex-shrink-0">
+                    <button 
+                      onClick={(e) => handleCopy(e, group.user.email?.split('@')[0] || '', group.user.id)}
+                      className="p-1.5 hover:bg-gray-200 rounded transition-colors text-gray-500 hover:text-black"
+                      title="Copy Username"
+                    >
+                      {copiedId === group.user.id ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                    </button>
+                    <button 
+                      onClick={(e) => handleDeleteUser(e, group.user.id)}
+                      disabled={isDeleting === group.user.id}
+                      className="p-1.5 hover:bg-red-100 rounded transition-colors text-gray-500 hover:text-red-600 disabled:opacity-50"
+                      title="Delete User & Data"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1 mt-1 truncate">
-                  <Hash size={12} className="flex-shrink-0" /> <span className="truncate">ID: {group.user.id}</span>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1 mt-2 truncate">
+                  <Hash size={10} className="flex-shrink-0" /> <span className="truncate">ID: {group.user.id}</span>
                 </p>
               </div>
             </div>
