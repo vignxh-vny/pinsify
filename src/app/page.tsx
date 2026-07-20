@@ -204,6 +204,10 @@ export default function LandingPage() {
           className="w-full flex flex-col gap-4"
         >
           <div className="relative">
+            <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">
+              <span className="text-[#E60023] mr-1">*</span> 
+              No sign in required, just your username is enough
+            </p>
             <div className="flex items-center bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:border-[#E60023] transition-colors w-full relative z-20">
               <span className="pl-4 text-xl font-bold text-black select-none">@</span>
               <input
