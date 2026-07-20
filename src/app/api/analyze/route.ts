@@ -341,7 +341,7 @@ export async function POST(request: Request) {
     
     // Check if it's a Zod hallucination error
     if (error instanceof z.ZodError) {
-      console.error("AI Hallucination (Zod Error):", error.errors);
+      console.error("AI Hallucination (Zod Error):", error);
       return NextResponse.json(
         { error: "The AI hallucinated invalid data. Please try again." },
         { status: 500 }
