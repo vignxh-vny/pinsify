@@ -36,6 +36,25 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
     }
   };
 
+  const handleDeleteProfile = async (e: React.MouseEvent, profileId: string) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this specific ID generation? This action cannot be undone.")) return;
+    
+    setIsDeleting(profileId);
+    try {
+      const res = await fetch(`/api/profile?id=${profileId}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.refresh();
+      } else {
+        alert("Failed to delete profile.");
+      }
+    } catch (err) {
+      alert("Error deleting profile.");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
   const handleCopy = (e: React.MouseEvent, text: string, id: string) => {
     e.stopPropagation();
     navigator.clipboard.writeText(text);
@@ -114,9 +133,19 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
                     
                     return (
                       <div key={profile.id} className="snap-start flex-none w-[360px] flex flex-col">
-                        <div className="bg-black text-white p-3 font-bold text-xs uppercase tracking-widest flex justify-between">
+                        <div className="bg-black text-white p-3 font-bold text-xs uppercase tracking-widest flex justify-between items-center">
                           <span>{idx === 0 ? "LATEST" : `v${group.profiles.length - idx}`}</span>
-                          <span>{date} {time}</span>
+                          <div className="flex items-center gap-3">
+                            <span>{date} {time}</span>
+                            <button
+                              onClick={(e) => handleDeleteProfile(e, profile.id)}
+                              disabled={isDeleting === profile.id}
+                              className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                              title="Delete this generation"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
                         <div className="bg-[#f4f4f4] border-x-4 border-b-4 border-black relative overflow-hidden flex justify-center items-start" style={{ height: "600px" }}>
                            {/* Render the actual ID Badge Card but scaled down slightly to fit nicely */}

@@ -26,3 +26,21 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
   }
 }
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing profile ID" }, { status: 400 });
+  }
+
+  try {
+    await prisma.aestheticProfile.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to delete profile" }, { status: 500 });
+  }
+}
