@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { StoryData } from "@/types/story";
 import { Download, Share2 } from "lucide-react";
 import * as htmlToImage from "html-to-image";
@@ -8,6 +8,11 @@ import * as htmlToImage from "html-to-image";
 export default function IDBadgeCard({ data, isArchive = false }: { data: StoryData, isArchive?: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [hostUrl, setHostUrl] = useState('PINCHECK');
+
+  useEffect(() => {
+    setHostUrl(window.location.host.toUpperCase());
+  }, []);
 
   const handleDownload = async () => {
     if (!cardRef.current) return;
@@ -43,7 +48,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: "My PinCheck ID",
-          text: `Check out my PinCheck Pinterest ID: ${data.identity.primary}! Get yours at pincheck.vercel.app`,
+          text: `Check out my PinCheck Pinterest ID: ${data.identity.primary}! Get yours at ${window.location.origin}`,
           files: [file],
         });
       } else {
@@ -198,7 +203,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
             </div>
             
             {/* Barcode (CSS simulated) */}
-            <div className="absolute bottom-3 right-3 w-16 h-[46px] flex flex-col justify-end bg-[#f4f4f4] p-1 rounded-sm shadow-inner shrink-0">
+            <div className="absolute bottom-3 right-3 w-auto min-w-[64px] max-w-[96px] h-[46px] flex flex-col justify-end bg-[#f4f4f4] p-1 rounded-sm shadow-inner shrink-0">
               <div className="flex-1 flex gap-[2px] w-full items-end justify-center">
                 {Array.from({ length: 12 }).map((_, i) => {
                   const heights = [100, 80, 100, 90, 100, 60, 100, 100, 70, 90, 100, 80];
@@ -208,8 +213,8 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
                   )
                 })}
               </div>
-              <div className="text-[6px] text-black font-mono text-center mt-1 font-bold">
-                {data.user.username.toUpperCase().substring(0, 10)}
+              <div className="text-[6px] text-black font-mono text-center mt-1 font-bold w-full truncate px-0.5">
+                {data.user.username.toUpperCase()}
               </div>
             </div>
           </div>
@@ -217,7 +222,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
           {/* WATERMARK */}
           <div className="w-full text-center mt-auto pt-2">
             <span className="text-[9px] font-black tracking-[0.3em] text-black/30 uppercase bg-[#f4f4f4] px-2 relative z-20">
-              PINCHECK.VERCEL.APP
+              {hostUrl}
             </span>
           </div>
 
