@@ -1,7 +1,9 @@
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 import { NextResponse } from "next/server";
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -87,6 +89,46 @@ const StorySchema: Schema = {
   },
   required: ["identity", "colorAura", "themes", "vibes", "feelsLike", "hiddenAesthetics", "drift"],
 };
+
+// Zod schema to prevent AI hallucinations
+const ZodStorySchema = z.object({
+  identity: z.object({
+    primary: z.string(),
+    secondary: z.array(z.string()),
+    emoji: z.string().optional(),
+    tagline: z.string(),
+    description: z.string(),
+    recentKeywords: z.array(z.string()).optional(),
+  }),
+  colorAura: z.object({
+    name: z.string(),
+    colors: z.array(z.string()),
+    description: z.string(),
+    mood: z.string(),
+  }),
+  themes: z.array(z.object({
+    name: z.string(),
+    percentage: z.number().optional(),
+    emoji: z.string().optional(),
+  })),
+  vibes: z.array(z.object({
+    trait: z.string(),
+    value: z.number().optional(),
+    label: z.string().optional(),
+  })).optional(),
+  feelsLike: z.string(),
+  hiddenAesthetics: z.array(z.object({
+    name: z.string(),
+    confidence: z.number().optional(),
+    description: z.string().optional(),
+    emoji: z.string().optional(),
+  })).optional(),
+  drift: z.array(z.object({
+    period: z.string(),
+    aesthetic: z.string(),
+    color: z.string().optional(),
+  })).optional(),
+});
 
 export async function POST(request: Request) {
   try {
@@ -207,7 +249,7 @@ export async function POST(request: Request) {
     let retries = 3;
     while (retries > 0) {
       try {
-        aiResponse = await ai.models.generateContent({
+        const aiPromise = ai.models.generateContent({
           model: "gemini-2.5-flash",
           contents: prompt,
           config: {
@@ -215,6 +257,13 @@ export async function POST(request: Request) {
             responseSchema: StorySchema,
           },
         });
+        
+        // 45 second timeout (since Vercel hobby now allows up to 60s with maxDuration)
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("TIMEOUT: Vibes too chaotic.")), 45000);
+        });
+
+        aiResponse = await Promise.race([aiPromise, timeoutPromise]) as any;
         break; // Success!
       } catch (err: any) {
         if (err.status === 503 && retries > 1) {
@@ -233,7 +282,9 @@ export async function POST(request: Request) {
       throw new Error("Failed to generate AI content");
     }
 
-    const aiData = JSON.parse(aiResponse.text);
+    // Parse and validate with Zod to prevent hallucinations
+    const rawAiData = JSON.parse(aiResponse.text);
+    const aiData = ZodStorySchema.parse(rawAiData);
 
     // 4. Construct Final Story Object
     const fullStoryData = {
@@ -277,6 +328,23 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "We are too broke to afford more server bandwidth today. Daily scan limit reached. Please try again tomorrow." },
         { status: 429 }
+      );
+    }
+    
+    // Check if it's a timeout error
+    if (error instanceof Error && error.message.includes("TIMEOUT: Vibes too chaotic.")) {
+      return NextResponse.json(
+        { error: "Vibes too chaotic. Try again." },
+        { status: 504 }
+      );
+    }
+    
+    // Check if it's a Zod hallucination error
+    if (error instanceof z.ZodError) {
+      console.error("AI Hallucination (Zod Error):", error.errors);
+      return NextResponse.json(
+        { error: "The AI hallucinated invalid data. Please try again." },
+        { status: 500 }
       );
     }
 
