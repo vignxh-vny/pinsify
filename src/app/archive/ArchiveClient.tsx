@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Folder, FolderOpen, User as UserIcon, Calendar, Hash, Copy, Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Folder, FolderOpen, User as UserIcon, Calendar, Hash, Copy, Check, Trash2 } from "lucide-react";
 import { StoryData } from "@/types/story";
 import IDBadgeCard from "@/components/story/IDBadgeCard";
 
@@ -13,6 +14,27 @@ type ProfileGroup = {
 export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup[] }) {
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleDeleteUser = async (e: React.MouseEvent, userId: string) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this user and all their generated profiles? This action cannot be undone.")) return;
+    
+    setIsDeleting(userId);
+    try {
+      const res = await fetch(`/api/user?id=${userId}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.refresh();
+      } else {
+        alert("Failed to delete user.");
+      }
+    } catch (err) {
+      alert("Error deleting user.");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
 
   const handleCopy = (e: React.MouseEvent, text: string, id: string) => {
     e.stopPropagation();
@@ -56,6 +78,14 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
                     title="Copy Username"
                   >
                     {copiedId === group.user.id ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                  </button>
+                  <button 
+                    onClick={(e) => handleDeleteUser(e, group.user.id)}
+                    disabled={isDeleting === group.user.id}
+                    className="p-1.5 hover:bg-red-100 rounded transition-colors text-gray-500 hover:text-red-600 flex-shrink-0 disabled:opacity-50"
+                    title="Delete User & Data"
+                  >
+                    <Trash2 size={16} />
                   </button>
                 </div>
                 <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1 mt-1 truncate">
