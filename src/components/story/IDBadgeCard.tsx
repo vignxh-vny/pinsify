@@ -11,7 +11,11 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
   const [hostUrl, setHostUrl] = useState('PINCHECK');
 
   useEffect(() => {
-    setHostUrl(window.location.host.toUpperCase());
+    let host = window.location.host.toUpperCase();
+    if (host.includes(".VERCEL.APP")) {
+      host = "PINCHECK-APP.VERCEL.APP";
+    }
+    setHostUrl(host);
   }, []);
 
   const handleDownload = async () => {
