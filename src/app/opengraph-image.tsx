@@ -36,12 +36,11 @@ export default async function Image() {
             height: 100,
             backgroundColor: '#E60023',
             border: '8px solid black',
-            boxShadow: '8px 8px 0px 0px rgba(0,0,0,1)'
           }}
         />
 
-        {/* Decorative Stars */}
-        <div style={{ position: 'absolute', top: 80, right: 100, fontSize: 80 }}>✨</div>
+        {/* Decorative elements */}
+        <div style={{ position: 'absolute', top: 80, right: 100, fontSize: 80, color: 'black', fontWeight: 900 }}>*</div>
         
         <div
           style={{
@@ -53,7 +52,6 @@ export default async function Image() {
             backgroundColor: 'white',
             padding: '40px 80px',
             border: '12px solid black',
-            boxShadow: '16px 16px 0px 0px rgba(0,0,0,1)',
           }}
         >
           <div
