@@ -97,7 +97,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing Pinterest username." }, { status: 400 });
     }
 
-    const cleanUsername = username.replace("@", "");
+    const cleanUsername = username.replace("@", "").toLowerCase();
 
     // We will check cache AFTER fetching Pinterest data to see if their pin count changed.
     // 1. Fetch RSS Feed and Profile HTML
