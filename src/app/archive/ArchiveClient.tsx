@@ -58,41 +58,37 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
           >
             {/* Folder Header - Clickable */}
             <div 
-              className={`p-4 cursor-pointer hover:bg-gray-100 flex flex-col justify-between min-h-[120px] ${isExpanded ? '' : 'flex-1'}`}
+              className={`p-4 cursor-pointer hover:bg-gray-100 flex flex-col justify-between min-h-[140px] ${isExpanded ? '' : 'flex-1'}`}
               onClick={() => setExpandedUserId(isExpanded ? null : group.user.id)}
             >
-              <div className="flex justify-between items-start w-full mb-2 gap-2">
+              <div className="flex justify-between items-start w-full">
                 <div className="flex-shrink-0 text-black">
-                  {isExpanded ? <FolderOpen size={32} /> : <Folder size={32} />}
+                  {isExpanded ? <FolderOpen size={40} /> : <Folder size={40} />}
                 </div>
-                <div className="bg-[#E60023] flex-shrink text-white px-2 py-1 font-black text-xs sm:text-sm shadow-md truncate" title={group.user.email?.split('@')[0] || 'USER'}>
-                  @{group.user.email?.split('@')[0] || 'USER'}
+                <div className="flex gap-1 flex-shrink-0">
+                  <button 
+                    onClick={(e) => handleCopy(e, group.user.email?.split('@')[0] || '', group.user.id)}
+                    className="p-1.5 hover:bg-gray-200 rounded transition-colors text-gray-500 hover:text-black"
+                    title="Copy Username"
+                  >
+                    {copiedId === group.user.id ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                  </button>
+                  <button 
+                    onClick={(e) => handleDeleteUser(e, group.user.id)}
+                    disabled={isDeleting === group.user.id}
+                    className="p-1.5 hover:bg-red-100 rounded transition-colors text-gray-500 hover:text-red-600 disabled:opacity-50"
+                    title="Delete User & Data"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               </div>
-              <div className="min-w-0 w-full mt-auto">
-                <div className="flex justify-between items-end w-full">
-                  <div className="text-[10px] sm:text-xs font-black text-gray-600 uppercase tracking-widest">
-                    {group.profiles.length} FILE{group.profiles.length !== 1 ? 'S' : ''}
-                  </div>
-                  <div className="flex gap-1 flex-shrink-0">
-                    <button 
-                      onClick={(e) => handleCopy(e, group.user.email?.split('@')[0] || '', group.user.id)}
-                      className="p-1.5 hover:bg-gray-200 rounded transition-colors text-gray-500 hover:text-black"
-                      title="Copy Username"
-                    >
-                      {copiedId === group.user.id ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
-                    </button>
-                    <button 
-                      onClick={(e) => handleDeleteUser(e, group.user.id)}
-                      disabled={isDeleting === group.user.id}
-                      className="p-1.5 hover:bg-red-100 rounded transition-colors text-gray-500 hover:text-red-600 disabled:opacity-50"
-                      title="Delete User & Data"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1 mt-2 truncate">
+              
+              <div className="w-full mt-auto pt-4">
+                <h2 className="font-black text-sm sm:text-base md:text-lg uppercase tracking-widest break-all leading-tight">
+                  @{group.user.email?.split('@')[0] || 'USER'}
+                </h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1 mt-1 truncate">
                   <Hash size={10} className="flex-shrink-0" /> <span className="truncate">ID: {group.user.id}</span>
                 </p>
               </div>
@@ -101,9 +97,14 @@ export default function ArchiveClient({ userGroups }: { userGroups: ProfileGroup
             {/* Expanded Content Area */}
             {isExpanded && (
               <div className="border-t-4 border-black p-6 bg-[#f4f4f4]">
-                <h3 className="font-black uppercase tracking-widest text-lg mb-6 flex items-center gap-2">
-                  <Calendar size={20} /> Generation History
-                </h3>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-black uppercase tracking-widest text-lg flex items-center gap-2">
+                    <Calendar size={20} /> Generation History
+                  </h3>
+                  <div className="bg-[#E60023] text-white px-3 py-1 font-black text-xs sm:text-sm shadow-md">
+                    {group.profiles.length} FILE{group.profiles.length !== 1 ? 'S' : ''}
+                  </div>
+                </div>
                 
                 <div className="flex gap-8 overflow-x-auto pb-4 snap-x">
                   {group.profiles.map((profile, idx) => {
