@@ -189,7 +189,7 @@ export default function IDBadgeCard({ data, isArchive = false }: { data: StoryDa
             <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide text-gray-300 mb-1 leading-tight border-b border-gray-700 pb-1">
               {data.identity.secondary.join(" / ")}
             </p>
-            <p className="text-[13px] sm:text-[15px] font-black leading-snug uppercase tracking-tight text-white drop-shadow-md mt-2 mb-1 pr-1 line-clamp-3">
+            <p className="text-[13px] sm:text-[15px] font-black leading-snug uppercase tracking-tight text-white drop-shadow-md mt-2 mb-1 pr-1 line-clamp-4">
               "{data.identity.tagline}"
             </p>
             <div className="mt-3 pr-20 min-h-[46px] flex flex-col justify-end">
