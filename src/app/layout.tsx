@@ -95,15 +95,15 @@ export default function RootLayout({
       lang="en"
       className={`${syne.variable} ${cormorant.variable} ${inter.variable} ${playfair.variable} ${courier.variable} ${anton.variable} dark`}
     >
-      <Script id="microsoft-clarity" strategy="afterInteractive">
-        {\`
+      <Script id="microsoft-clarity" strategy="afterInteractive" dangerouslySetInnerHTML={{
+        __html: `
           (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
               t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
               y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
           })(window, document, "clarity", "script", "xpt6bhvxnb");
-        \`}
-      </Script>
+        `
+      }} />
       <body className="antialiased bg-black text-[var(--text-primary)] selection:bg-[var(--accent-violet)] selection:text-white flex items-center justify-center min-h-dvh sm:p-4 overflow-hidden">
         {/* Mobile Viewport Container */}
         <div className="relative w-full h-[100dvh] sm:h-[min(95dvh,900px)] sm:w-[min(100vw,430px)] sm:aspect-[9/16] sm:rounded-[2.5rem] sm:border-[8px] border-[#1a1a24] overflow-hidden shadow-2xl bg-[var(--bg-primary)] ring-1 ring-white/10 mx-auto flex flex-col">
