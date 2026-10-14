@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { deleteUserById } from "@/lib/db";
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,15 +9,11 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
   }
 
-  try {
-    // Because AestheticProfile has onDelete: Cascade, deleting the user will delete all their profiles.
-    await prisma.user.delete({
-      where: { id },
-    });
+  const success = await deleteUserById(id);
 
+  if (success) {
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error deleting user:", error);
+  } else {
     return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
   }
 }

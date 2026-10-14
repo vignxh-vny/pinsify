@@ -1,23 +1,53 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useState, useEffect, Suspense, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import IDBadgeCard from "@/components/story/IDBadgeCard";
+import { StoryData } from "@/types/story";
 
-export default function LandingPage() {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [loadingTextIndex, setLoadingTextIndex] = useState(0);
-  const [loadingProgress, setLoadingProgress] = useState(0);
+function PinCheckApp() {
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanStage, setScanStage] = useState(0);
+  const [isFail, setIsFail] = useState(false);
+  const [statusMsg, setStatusMsg] = useState("");
+  const [statusSub, setStatusSub] = useState("");
   const [username, setUsername] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-  const router = useRouter();
+  const [currentProfileId, setCurrentProfileId] = useState<string | null>(null);
 
-  const filteredHistory = username.trim() === "" 
-    ? [] 
-    : history.filter(h => h.toLowerCase().includes(username.toLowerCase()));
+  const [cardData, setCardData] = useState<StoryData>({
+    user: {
+      username: "",
+      displayName: "",
+      avatarUrl: "",
+      totalPins: 0,
+      totalBoards: 0,
+    },
+    identity: {
+      primary: "",
+      secondary: [],
+      emoji: "✨",
+      tagline: "",
+      description: "",
+    },
+    colorAura: {
+      name: "",
+      colors: [],
+      description: "",
+      mood: "",
+    },
+    themes: [],
+    vibes: [],
+    feelsLike: "",
+    hiddenAesthetics: [],
+    drift: [],
+  });
+
+  const searchParams = useSearchParams();
+  const profileId = searchParams.get("id");
+  const queryUser = searchParams.get("u");
 
   useEffect(() => {
     try {
@@ -28,107 +58,244 @@ export default function LandingPage() {
     }
   }, []);
 
-  const loadingPhrases = [
-    "SCANNING PINTEREST BOARDS...",
-    "EXTRACTING VISUAL DNA...",
-    "ANALYZING COLOR AURAS...",
-    "MATCHING AESTHETIC SIGNATURES...",
-    "PRINTING VIP BADGE...",
-  ];
+  const handleAnalyze = useCallback(async (cleanUser: string, force: boolean = false) => {
+    if (!cleanUser) return;
 
-  useEffect(() => {
-    let textInterval: NodeJS.Timeout;
-    let progressInterval: NodeJS.Timeout;
-    
-    if (isAnalyzing) {
-      setLoadingProgress(0);
-      setLoadingTextIndex(0);
-      
-      textInterval = setInterval(() => {
-        setLoadingTextIndex((prev) =>
-          prev < loadingPhrases.length - 1 ? prev + 1 : prev
-        );
-      }, 4000);
-      
-      progressInterval = setInterval(() => {
-        setLoadingProgress((prev) => {
-          if (prev >= 99) return 99;
-          const increment = prev > 85 ? 0.2 : (Math.random() * 2 + 0.5);
-          const next = prev + increment;
-          return next > 99 ? 99 : next;
-        });
-      }, 300);
-    }
-    
-    return () => {
-      clearInterval(textInterval);
-      clearInterval(progressInterval);
-    };
-  }, [isAnalyzing, loadingPhrases.length]);
-
-  const handleAnalyze = async (force: boolean = false) => {
-    if (!username.trim()) return;
-    setIsAnalyzing(true);
-    setErrorMsg("");
-    
-    const trimmedUser = username.trim();
     try {
-      setHistory(prev => {
-        const newHistory = [trimmedUser, ...prev.filter(u => u.toLowerCase() !== trimmedUser.toLowerCase())].slice(0, 5);
+      setHistory((prev) => {
+        const newHistory = [cleanUser, ...prev.filter((u) => u.toLowerCase() !== cleanUser.toLowerCase())].slice(0, 5);
         localStorage.setItem("pinsbyme_history", JSON.stringify(newHistory));
         return newHistory;
       });
-    } catch (e) {
-      console.error("Failed to save history", e);
-    }
-    try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.trim(), force }),
-      });
-      const data = await res.json();
+    } catch {}
 
-      if (res.ok) {
-        router.push(`/story?id=${data.profileId}`);
-      } else {
-        setErrorMsg(data.error);
-        setIsAnalyzing(false);
+    setIsScanning(true);
+    setIsFail(false);
+    setScanStage(0);
+    setStatusMsg("CONNECTING TO PINTEREST...");
+    setStatusSub("Knocking on your boards.");
+
+    setCardData({
+      user: {
+        username: cleanUser,
+        displayName: cleanUser,
+        avatarUrl: "",
+        totalPins: 0,
+        totalBoards: 0,
+      },
+      identity: {
+        primary: "",
+        secondary: [],
+        emoji: "✨",
+        tagline: "",
+        description: "",
+      },
+      colorAura: {
+        name: "",
+        colors: [],
+        description: "",
+        mood: "",
+      },
+      themes: [],
+      vibes: [],
+      feelsLike: "",
+      hiddenAesthetics: [],
+      drift: [],
+    });
+
+    try {
+      const res = await fetch("/api/analyze?stream=true", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+        },
+        body: JSON.stringify({ username: cleanUser, force }),
+      });
+
+      if (!res.ok || !res.body) {
+        const errJson = await res.json().catch(() => ({}));
+        setIsFail(true);
+        setStatusMsg("COULD NOT READ THAT ACCOUNT");
+        setStatusSub(errJson.error || "Check the username, and make sure its saved pins are public.");
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          const eventMatch = line.match(/^event:\s*(.+)$/m);
+          const dataMatch = line.match(/^data:\s*(.+)$/m);
+          const event = eventMatch ? eventMatch[1].trim() : "message";
+          const payload = dataMatch ? JSON.parse(dataMatch[1].trim()) : {};
+
+          if (event === "stage1") {
+            setScanStage(1);
+            setStatusMsg("COUNTING YOUR BOARDS...");
+            setStatusSub("Even the ones you forgot about.");
+            setCardData((prev) => ({
+              ...prev,
+              categoryTag: payload.category,
+              user: {
+                ...prev.user,
+                totalPins: payload.pins,
+                totalBoards: payload.boards,
+              },
+            }));
+          } else if (event === "stage2") {
+            setScanStage(2);
+            setStatusMsg("READING YOUR PINS...");
+            setStatusSub("Judging your 3am saves.");
+            setCardData((prev) => ({
+              ...prev,
+              gradient: payload.gradient,
+              headCategories: payload.head,
+              fixation: payload.fixation,
+              alsoSaves: payload.also,
+            }));
+          } else if (event === "stage3") {
+            setScanStage(3);
+            setStatusMsg("FINDING YOUR VIBE...");
+            setStatusSub("Naming the aesthetic. No pressure.");
+            setCardData((prev) => ({
+              ...prev,
+              identity: {
+                ...prev.identity,
+                primary: payload.title,
+              },
+            }));
+          } else if (event === "stage4") {
+            setScanStage(4);
+            setStatusMsg("WRITING YOUR ROAST...");
+            setStatusSub("It will be affectionate. Mostly.");
+            setCardData((prev) => ({
+              ...prev,
+              identity: {
+                ...prev.identity,
+                tagline: payload.quote,
+              },
+            }));
+          } else if (event === "done") {
+            setTimeout(() => {
+              setScanStage(5);
+              setCardData(payload.storyData);
+              if (payload.profileId) {
+                setCurrentProfileId(payload.profileId);
+                window.history.replaceState(null, "", `/?id=${payload.profileId}`);
+              }
+            }, 1200);
+          } else if (event === "error") {
+            setIsFail(true);
+            setStatusMsg("COULD NOT READ THAT ACCOUNT");
+            setStatusSub(payload.message || "Check the username, and make sure its saved pins are public.");
+          }
+        }
       }
     } catch {
-      setErrorMsg("Something went wrong analyzing your Pinterest.");
-      setIsAnalyzing(false);
+      setIsFail(true);
+      setStatusMsg("COULD NOT READ THAT ACCOUNT");
+      setStatusSub("Check the username, and make sure its saved pins are public.");
     }
-  };
+  }, []);
 
+  // Check URL params on initial load
+  useEffect(() => {
+    if (profileId) {
+      setCurrentProfileId(profileId);
+      setIsScanning(true);
+      fetch(`/api/profile?id=${profileId}`)
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.data) {
+            setCardData(json.data);
+            setScanStage(5);
+          } else {
+            setIsFail(true);
+            setStatusMsg("PROFILE NOT FOUND");
+            setStatusSub("Could not locate this saved Pinterest ID card.");
+          }
+        })
+        .catch(() => {
+          setIsFail(true);
+          setStatusMsg("PROFILE NOT FOUND");
+          setStatusSub("Could not locate this saved Pinterest ID card.");
+        });
+    } else if (queryUser) {
+      const clean = queryUser.replace("@", "").trim().toLowerCase();
+      setUsername(clean);
+      handleAnalyze(clean, false);
+    }
+  }, [profileId, queryUser, handleAnalyze]);
+
+  const filteredHistory =
+    username.trim() === "" ? [] : history.filter((h) => h.toLowerCase().includes(username.toLowerCase()));
+
+  // Render Dark Scan / Card Screen
+  if (isScanning) {
+    return (
+      <main className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#05060b] select-none">
+        {/* Radial Dark Space Background matching reference */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(ellipse at 50% 40%, #11122a 0%, #05060b 62%)",
+          }}
+        />
+
+        <div className="relative z-10 w-full flex flex-col items-center justify-center p-4">
+          <IDBadgeCard
+            data={cardData}
+            profileId={currentProfileId || undefined}
+            stage={scanStage}
+            isLoading={scanStage < 5 && !isFail}
+            isFail={isFail}
+            statusMessage={statusMsg}
+            statusSub={statusSub}
+            onRetry={() => {
+              setIsScanning(false);
+              setIsFail(false);
+            }}
+          />
+        </div>
+      </main>
+    );
+  }
+
+  // Render Initial Brutalist Input Screen
   return (
     <main className="relative min-h-screen overflow-hidden font-sans bg-[#f4f4f4] flex flex-col items-center justify-center">
-      {/* ══════════════════════════════════
-          BACKGROUND TEXTURES & GRIDS
-          ══════════════════════════════════ */}
       {/* Grid Pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
-          backgroundImage: "linear-gradient(rgba(0,0,0,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,1) 1px, transparent 1px)",
-          backgroundSize: "40px 40px"
-        }}
-      />
-      
-      {/* Paper / Crinkle Texture Overlay (CSS Pattern) */}
-      <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-20 mix-blend-multiply"
-        style={{
-          backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')",
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,1) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
       />
 
-      {/* ══════════════════════════════════
-          MAIN CONTENT
-          ══════════════════════════════════ */}
+      {/* Paper Crinkle Overlay */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none opacity-20 mix-blend-multiply"
+        style={{
+          backgroundImage:
+            "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')",
+        }}
+      />
+
       <section className="relative z-10 w-full max-w-md px-6 flex flex-col items-center mt-[-10vh]">
-        
-        {/* TOP BADGE */}
+        {/* Top Badges */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -143,43 +310,43 @@ export default function LandingPage() {
               ONLINE
             </div>
           </div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[#E60023] font-black text-2xl tracking-normal" style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
+            className="text-[#E60023] font-black text-2xl tracking-normal"
+            style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
           >
             PIN CHECK
           </motion.div>
         </motion.div>
 
-        {/* HEADLINE */}
+        {/* Headline */}
         <div className="w-full flex flex-col mb-10 relative">
           <div className="overflow-hidden">
-            <motion.h1 
+            <motion.h1
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-black font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.8] tracking-normal z-10"
+              className="text-black font-black uppercase text-[2.95rem] sm:text-[3.4rem] leading-[0.85] tracking-normal z-10 whitespace-nowrap"
               style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
             >
-              AESTHETIC
+              YOUR PINS
             </motion.h1>
           </div>
           <div className="overflow-hidden bg-[#E60023] w-fit px-2 mt-2 -ml-2 z-20 shadow-lg rotate-1">
-            <motion.h1 
+            <motion.h1
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white font-black uppercase text-[4rem] sm:text-[5rem] leading-[0.85] tracking-normal"
+              className="text-white font-black uppercase text-[2.95rem] sm:text-[3.4rem] leading-[0.9] tracking-normal whitespace-nowrap"
               style={{ fontFamily: "var(--next-font-anton), Impact, sans-serif" }}
             >
-              SCANNER
+              ARE SNITCHING.
             </motion.h1>
           </div>
-          
-          {/* Subtext Grid */}
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, filter: "blur(10px)" }}
             animate={{ opacity: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.3, delay: 0.7 }}
@@ -196,7 +363,7 @@ export default function LandingPage() {
           </motion.div>
         </div>
 
-        {/* INPUT & ACTION */}
+        {/* Input & Actions */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -205,7 +372,7 @@ export default function LandingPage() {
         >
           <div className="relative">
             <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">
-              <span className="text-[#E60023] mr-1">*</span> 
+              <span className="text-[#E60023] mr-1">*</span>
               No sign in required, just your username is enough
             </p>
             <div className="flex items-center bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:border-[#E60023] transition-colors w-full relative z-20">
@@ -217,7 +384,8 @@ export default function LandingPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     setShowHistory(false);
-                    handleAnalyze(false);
+                    const clean = username.replace("@", "").trim().toLowerCase();
+                    handleAnalyze(clean, false);
                   }
                 }}
                 onFocus={() => setShowHistory(true)}
@@ -226,7 +394,7 @@ export default function LandingPage() {
                 className="w-full bg-transparent p-4 pl-1 text-xl font-bold uppercase tracking-widest text-black placeholder-gray-400 focus:outline-none rounded-none"
               />
             </div>
-            
+
             <AnimatePresence>
               {showHistory && filteredHistory.length > 0 && (
                 <motion.div
@@ -239,7 +407,7 @@ export default function LandingPage() {
                 >
                   <div className="px-4 py-2 bg-black text-white text-[10px] font-black tracking-widest uppercase flex justify-between items-center">
                     <span>Recent Searches</span>
-                    <button 
+                    <button
                       onClick={() => {
                         setHistory([]);
                         localStorage.removeItem("pinsbyme_history");
@@ -256,6 +424,8 @@ export default function LandingPage() {
                           onClick={() => {
                             setUsername(histUser);
                             setShowHistory(false);
+                            const clean = histUser.replace("@", "").trim().toLowerCase();
+                            handleAnalyze(clean, false);
                           }}
                           className="w-full text-left px-4 py-3 text-lg font-bold uppercase tracking-widest text-black hover:bg-[#E60023] hover:text-white transition-colors border-b-2 border-black last:border-b-0"
                         >
@@ -270,111 +440,44 @@ export default function LandingPage() {
           </div>
 
           <button
-            onClick={() => handleAnalyze(false)}
-            disabled={!username.trim() || isAnalyzing}
-            className="w-full bg-[#E60023] border-4 border-black text-white p-4 text-2xl font-black uppercase tracking-widest hover:bg-black transition-colors disabled:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:shadow-[4px_4px_0px_0px_rgba(156,163,175,1)] disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] rounded-none"
+            onClick={() => {
+              const clean = username.replace("@", "").trim().toLowerCase();
+              handleAnalyze(clean, false);
+            }}
+            disabled={!username.trim()}
+            className="w-full bg-[#E60023] border-4 border-black text-white p-4 text-2xl font-black uppercase tracking-widest hover:bg-black transition-colors disabled:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:shadow-[4px_4px_0px_0px_rgba(156,163,175,1)] disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] rounded-none cursor-pointer"
             style={{ fontFamily: "Impact, sans-serif" }}
           >
             GENERATE ID
           </button>
-          
-          {errorMsg && (
-            <motion.div 
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full bg-black text-white p-4 text-xs sm:text-sm font-bold uppercase tracking-widest border-4 border-[#E60023] shadow-[4px_4px_0px_0px_rgba(230,0,35,1)] mt-4"
-            >
-              <span className="text-[#E60023]">SYSTEM WARNING: </span>
-              {errorMsg}
-            </motion.div>
-          )}
-          
+
           <div className="text-center mt-2">
             <p className="text-[10px] font-black tracking-[0.2em] text-gray-500">
               * REQUIRES PUBLIC SAVED PINS TO WORK
             </p>
           </div>
-          
+
           <button
-            onClick={() => handleAnalyze(true)}
-            disabled={!username.trim() || isAnalyzing}
-            className="w-full bg-white border-4 border-black text-black p-3 text-xl font-black uppercase tracking-widest hover:bg-gray-100 transition-colors disabled:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:shadow-none disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] rounded-none"
+            onClick={() => {
+              const clean = username.replace("@", "").trim().toLowerCase();
+              handleAnalyze(clean, true);
+            }}
+            disabled={!username.trim()}
+            className="w-full bg-white border-4 border-black text-black p-3 text-xl font-black uppercase tracking-widest hover:bg-gray-100 transition-colors disabled:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:shadow-none disabled:cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] rounded-none cursor-pointer"
             style={{ fontFamily: "Impact, sans-serif" }}
           >
             FORCE REGENERATE
           </button>
         </motion.div>
       </section>
-
-      {/* ══════════════════════════════════
-          ID BADGE PRINTING (LOADING)
-          ══════════════════════════════════ */}
-      <AnimatePresence>
-        {isAnalyzing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#f4f4f4] overflow-hidden font-mono"
-          >
-            {/* Subtle Grid Background */}
-            <div 
-              className="absolute inset-0 opacity-10"
-              style={{
-                backgroundImage: "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
-                backgroundSize: "40px 40px"
-              }}
-            />
-
-            {/* Lottie Loading Animation */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0, scale: 0.95 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-              className="relative w-80 h-80 z-10 flex items-center justify-center mix-blend-multiply drop-shadow-xl"
-            >
-              <DotLottieReact
-                src="/talent-search.json"
-                loop
-                autoplay
-              />
-            </motion.div>
-
-
-            {/* Dynamic Loading Text */}
-            <div className="relative z-10 flex flex-col items-center mt-12">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={loadingTextIndex}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="bg-black text-white px-4 py-1 text-sm font-bold tracking-widest uppercase mb-2 shadow-[4px_4px_0px_0px_rgba(230,0,35,0.5)]"
-                >
-                  {loadingPhrases[loadingTextIndex]}
-                </motion.div>
-              </AnimatePresence>
-              
-              <div className="text-gray-500 text-xs tracking-[0.3em] uppercase mt-2">
-                PLEASE DO NOT CLOSE
-              </div>
-              
-              <div className="w-64 h-1 bg-gray-300 mt-6 overflow-hidden rounded-full shadow-inner">
-                <motion.div 
-                  className="h-full bg-[#E60023]"
-                  animate={{ width: `${loadingProgress}%` }}
-                  transition={{ ease: "linear", duration: 0.3 }}
-                />
-              </div>
-              <div className="text-gray-400 text-[10px] font-mono mt-2 font-bold tracking-widest">
-                {Math.floor(loadingProgress)}%
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#05060b]" />}>
+      <PinCheckApp />
+    </Suspense>
   );
 }

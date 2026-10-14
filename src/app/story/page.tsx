@@ -4,10 +4,12 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { mockStoryData } from "@/lib/mock-data";
 import IDBadgeCard from "@/components/story/IDBadgeCard";
+import { StoryData } from "@/types/story";
 
 function StoryViewer() {
-  const [data, setData] = useState(mockStoryData);
+  const [data, setData] = useState<StoryData>(mockStoryData);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFail, setIsFail] = useState(false);
   
   const searchParams = useSearchParams();
   const profileId = searchParams.get("id");
@@ -19,33 +21,37 @@ function StoryViewer() {
         .then((json) => {
           if (json.data) {
             setData(json.data);
+          } else {
+            setIsFail(true);
           }
         })
+        .catch(() => setIsFail(true))
         .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
   }, [profileId]);
 
-  if (isLoading) {
-    return (
-      <main className="min-h-dvh flex items-center justify-center bg-[var(--bg-primary)]">
-        <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-dvh flex items-center justify-center bg-[var(--bg-primary)] relative overflow-hidden">
-      {/* Background ambient glow based on user's aura */}
+    <main className="min-h-screen flex items-center justify-center bg-[#05060b] relative overflow-hidden select-none">
       <div 
-        className="absolute inset-0 opacity-20 filter blur-[100px] pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at 50% 50%, var(--accent-violet) 0%, transparent 70%)`
+          backgroundImage: "radial-gradient(ellipse at 50% 40%, #11122a 0%, #05060b 62%)"
         }}
       />
-      <div className="relative z-10 w-full h-full flex items-center justify-center">
-        <IDBadgeCard data={data} />
+      <div className="relative z-10 w-full h-full flex items-center justify-center p-4">
+        <IDBadgeCard
+          data={data}
+          stage={isFail ? 0 : 5}
+          isLoading={isLoading}
+          isFail={isFail}
+          statusMessage={isFail ? "COULD NOT READ THAT ACCOUNT" : undefined}
+          statusSub={isFail ? "Check the username, and make sure its saved pins are public." : undefined}
+          onRetry={() => {
+            window.location.href = "/";
+          }}
+        />
       </div>
     </main>
   );
@@ -53,7 +59,7 @@ function StoryViewer() {
 
 export default function StoryPage() {
   return (
-    <Suspense fallback={<main className="min-h-dvh flex items-center justify-center bg-[var(--bg-primary)]"></main>}>
+    <Suspense fallback={<main className="min-h-screen flex items-center justify-center bg-[#05060b]" />}>
       <StoryViewer />
     </Suspense>
   );

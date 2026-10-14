@@ -51,6 +51,14 @@ export interface UserProfile {
   totalBoards: number;
 }
 
+export interface ShopProduct {
+  title: string;
+  note: string;
+  emoji: string;
+  bg?: string;
+  url: string;
+}
+
 export interface StoryData {
   user: UserProfile;
   identity: AestheticIdentity;
@@ -60,6 +68,12 @@ export interface StoryData {
   feelsLike: string;
   hiddenAesthetics: HiddenAesthetic[];
   drift: AestheticDriftPoint[];
+  gradient?: string;
+  categoryTag?: string;
+  headCategories?: string;
+  fixation?: string;
+  alsoSaves?: string;
+  shopProducts?: ShopProduct[];
 }
 
 export interface StoryCardProps {

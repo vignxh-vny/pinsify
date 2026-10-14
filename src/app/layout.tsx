@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Cormorant_Garamond, Inter, Playfair_Display, Courier_Prime, Anton } from "next/font/google";
+import { Syne, Cormorant_Garamond, Inter, Playfair_Display, Courier_Prime, Anton, Mr_Dafoe, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const syne = Syne({
@@ -14,6 +15,20 @@ const anton = Anton({
   subsets: ["latin"],
   display: "swap",
   weight: ["400"],
+});
+
+const mrDafoe = Mr_Dafoe({
+  variable: "--next-font-mr-dafoe",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--next-font-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "700"],
 });
 
 const cormorant = Cormorant_Garamond({
@@ -46,7 +61,21 @@ const courier = Courier_Prime({
   style: ["normal", "italic"],
 });
 
+const getBaseUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "https://pincheck.in";
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(getBaseUrl()),
   title: "PinCheck — Discover Your Aesthetic Identity",
   description:
     "An AI-powered brutalist Pinterest profile analyzer.",
@@ -66,12 +95,21 @@ export const metadata: Metadata = {
       "An AI-powered brutalist Pinterest profile analyzer.",
     type: "website",
     siteName: "PinCheck",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "PinCheck — Discover Your Aesthetic Identity",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "PinCheck — Discover Your Aesthetic Identity",
     description:
       "An AI-powered brutalist Pinterest profile analyzer.",
+    images: ["/api/og"],
   },
 };
 
@@ -92,8 +130,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${cormorant.variable} ${inter.variable} ${playfair.variable} ${courier.variable} ${anton.variable} dark`}
+      className={`${syne.variable} ${cormorant.variable} ${inter.variable} ${playfair.variable} ${courier.variable} ${anton.variable} ${mrDafoe.variable} ${jetbrainsMono.variable} dark`}
     >
+      <Script
+        id="microsoft-clarity"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "xpt6bhvxnb");
+          `,
+        }}
+      />
       <body className="antialiased bg-black text-[var(--text-primary)] selection:bg-[var(--accent-violet)] selection:text-white flex items-center justify-center min-h-dvh sm:p-4 overflow-hidden">
         {/* Mobile Viewport Container */}
         <div className="relative w-full h-[100dvh] sm:h-[min(95dvh,900px)] sm:w-[min(100vw,430px)] sm:aspect-[9/16] sm:rounded-[2.5rem] sm:border-[8px] border-[#1a1a24] overflow-hidden shadow-2xl bg-[var(--bg-primary)] ring-1 ring-white/10 mx-auto flex flex-col">

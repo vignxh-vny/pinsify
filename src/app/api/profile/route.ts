@@ -1,8 +1,6 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { getProfileById, deleteProfileById } from "@/lib/db";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -12,20 +10,15 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing profile ID" }, { status: 400 });
   }
 
-  try {
-    const profile = await prisma.aestheticProfile.findUnique({
-      where: { id },
-    });
+  const profileData = await getProfileById(id);
 
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ data: profile.data });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+  if (profileData) {
+    return NextResponse.json({ data: profileData });
   }
+
+  return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 }
+
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
@@ -34,13 +27,11 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Missing profile ID" }, { status: 400 });
   }
 
-  try {
-    await prisma.aestheticProfile.delete({
-      where: { id },
-    });
+  const success = await deleteProfileById(id);
 
+  if (success) {
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } else {
     return NextResponse.json({ error: "Failed to delete profile" }, { status: 500 });
   }
 }
